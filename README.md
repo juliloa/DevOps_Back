@@ -3,3 +3,5 @@ Integrantes:
 -Juliana Loaiza 
 -Emanuel Pulgarin Cofles
 -Osvaldo Duran
+-Lucas Zapata
+
