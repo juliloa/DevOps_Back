@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/juliloa/DevOps_Back/compare/v1.0.0...v1.0.1) (2025-04-02)
+
+
+### Bug Fixes
+
+* Update release-please.yml ([cbba2ca](https://github.com/juliloa/DevOps_Back/commit/cbba2caa8703e8354bacd764e0f886970eda26e8))
+
 ## 1.0.0 (2025-04-02)
 
 
