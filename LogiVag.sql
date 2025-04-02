@@ -19,6 +19,7 @@ CREATE TABLE users (
     id_card VARCHAR(20) PRIMARY KEY,  -- Using ID card as PK
     name VARCHAR(100) NOT NULL,
     email VARCHAR(150) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
     phone VARCHAR(20),
     warehouse_id INT NULL, 
     role_id INT NOT NULL,
@@ -99,28 +100,38 @@ CREATE TABLE logs (
 -- Trigger Function: General Audit
 CREATE OR REPLACE FUNCTION general_audit()
 RETURNS TRIGGER AS $$
+DECLARE
+    audit_user_id VARCHAR(20);
 BEGIN
-    -- INSERT case
+    -- Intentar obtener el user_id si existe
+    IF TG_OP IN ('INSERT', 'UPDATE') AND NEW IS DISTINCT FROM NULL THEN
+        audit_user_id := COALESCE(NEW.user_id, NULL);
+    ELSIF TG_OP = 'DELETE' AND OLD IS DISTINCT FROM NULL THEN
+        audit_user_id := COALESCE(OLD.user_id, NULL);
+    ELSE
+        audit_user_id := NULL;
+    END IF;
+
+    -- INSERT
     IF (TG_OP = 'INSERT') THEN
         INSERT INTO logs (user_id, affected_table, operation, new_record, date)
-        VALUES (NEW.user_id, TG_TABLE_NAME, 'INSERT', row_to_json(NEW)::JSONB, NOW());
+        VALUES (audit_user_id, TG_TABLE_NAME, 'INSERT', row_to_json(NEW)::JSONB, NOW());
 
-    -- DELETE case
+    -- DELETE
     ELSIF (TG_OP = 'DELETE') THEN
         INSERT INTO logs (user_id, affected_table, operation, previous_record, date)
-        VALUES (OLD.user_id, TG_TABLE_NAME, 'DELETE', row_to_json(OLD)::JSONB, NOW());
+        VALUES (audit_user_id, TG_TABLE_NAME, 'DELETE', row_to_json(OLD)::JSONB, NOW());
 
-    -- UPDATE case
+    -- UPDATE
     ELSIF (TG_OP = 'UPDATE') THEN
         INSERT INTO logs (user_id, affected_table, operation, previous_record, new_record, date)
-        VALUES (OLD.user_id, TG_TABLE_NAME, 'UPDATE', row_to_json(OLD)::JSONB, row_to_json(NEW)::JSONB, NOW());
+        VALUES (audit_user_id, TG_TABLE_NAME, 'UPDATE', row_to_json(OLD)::JSONB, row_to_json(NEW)::JSONB, NOW());
     END IF;
 
     RETURN NULL; 
 END;
 $$ LANGUAGE plpgsql;
 
--- Apply the trigger to each table
 CREATE TRIGGER audit_users
 AFTER INSERT OR UPDATE OR DELETE ON users
 FOR EACH ROW EXECUTE FUNCTION general_audit();
@@ -153,6 +164,29 @@ CREATE TRIGGER audit_movements
 AFTER INSERT OR UPDATE OR DELETE ON movements
 FOR EACH ROW EXECUTE FUNCTION general_audit();
 
-CREATE TRIGGER audit_logs
-AFTER INSERT OR UPDATE OR DELETE ON logs
-FOR EACH ROW EXECUTE FUNCTION general_audit();
+ALTER TABLE movements
+ADD CONSTRAINT chk_different_warehouses CHECK (source_warehouse <> destination_warehouse);
+
+CREATE OR REPLACE FUNCTION validate_inventory()
+RETURNS TRIGGER AS $$
+DECLARE
+    available_quantity INT;
+BEGIN
+    -- Validar existencia de inventario
+    SELECT quantity INTO available_quantity
+    FROM inventory
+    WHERE variant_id = NEW.variant_id AND warehouse_id = NEW.source_warehouse;
+
+    -- Si no existe el inventario o la cantidad es insuficiente, lanzar excepción
+    IF NOT FOUND OR NEW.quantity > available_quantity THEN
+        RAISE EXCEPTION 'La cantidad del movimiento excede el inventario disponible o no hay inventario registrado.';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_validate_inventory
+BEFORE INSERT OR UPDATE ON movements
+FOR EACH ROW
+EXECUTE FUNCTION validate_inventory();
