@@ -11,7 +11,9 @@ CREATE TABLE warehouses (
     phone VARCHAR(20),
     email VARCHAR(150) UNIQUE,
     location TEXT NOT NULL,
-    max_capacity INT NOT NULL
+    max_capacity INT NOT NULL,
+    open_hours VARCHAR(50) NOT NULL DEFAULT '06:00-22:00',
+    coordinates JSONB,
 );
 
 -- Table: Users
