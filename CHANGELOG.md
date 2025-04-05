@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/juliloa/DevOps_Back/compare/v1.0.1...v2.0.0) (2025-04-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* add user authentication using JWT ([#7](https://github.com/juliloa/DevOps_Back/issues/7))
+
+### Features
+
+* add user authentication using JWT ([#7](https://github.com/juliloa/DevOps_Back/issues/7)) ([a126f8a](https://github.com/juliloa/DevOps_Back/commit/a126f8a8954bc8c75fbb57517cdedbca7615b9cf))
+
 ## [1.0.1](https://github.com/juliloa/DevOps_Back/compare/v1.0.0...v1.0.1) (2025-04-02)
 
 
