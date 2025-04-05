@@ -7,6 +7,8 @@ class Warehouses(models.Model):
     email = models.CharField(unique=True, max_length=150, blank=True, null=True)
     location = models.TextField()
     max_capacity = models.IntegerField(null=False)
+    open_hours = models.CharField(max_length=50, default='06:00-22:00')
+    coordinates = models.JSONField(null=True, blank=True)
 
     class Meta:
         managed = False
