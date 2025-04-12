@@ -15,8 +15,8 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         password = request.data.get('password')
         
 
-        # Autenticación con el backend personalizado
-        user = authenticate(request, email=email, password=password)  # Quitado el rol si ya no se necesita
+        
+        user = authenticate(request, email=email, password=password)  
 
         if user:
             refresh = RefreshToken.for_user(user)
