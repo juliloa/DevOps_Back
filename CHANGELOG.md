@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/juliloa/DevOps_Back/compare/v2.0.0...v2.0.1) (2025-04-13)
+
+
+### Bug Fixes
+
+* stop tracking cache files, LogiVag.sql and move SECRET_KEY to .env ([#10](https://github.com/juliloa/DevOps_Back/issues/10)) ([a7ad95b](https://github.com/juliloa/DevOps_Back/commit/a7ad95bb7def205be23f54a37dbc1cc62da18655))
+
 ## [2.0.0](https://github.com/juliloa/DevOps_Back/compare/v1.0.1...v2.0.0) (2025-04-05)
 
 
