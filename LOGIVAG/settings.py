@@ -15,6 +15,7 @@ import os
 import dj_database_url
 from dotenv import load_dotenv
 from datetime import timedelta
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,10 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-bk^#^llvyt(@dizxwu8rel7fzr6bfa-#rq6&jues*d8mrcu%-g'
 
-# SECURITY WARNING: don't run with debug turned on in production!
+SECRET_KEY = os.getenv("SECRET_KEY")
+
+#
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -57,8 +58,8 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'AUTH_HEADER_TYPES': ('Bearer',),
-    'USER_ID_FIELD': 'id_card',     # Este es tu campo en el modelo Users
-    'USER_ID_CLAIM': 'id_card',     # Este es el nombre que saldrá en el payload del token
+    'USER_ID_FIELD': 'id_card',     
+    'USER_ID_CLAIM': 'id_card',     
 }
 
 MIDDLEWARE = [
@@ -94,8 +95,6 @@ WSGI_APPLICATION = 'LOGIVAG.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
-load_dotenv()
 
 DATABASES = {
     'default': dj_database_url.config(
