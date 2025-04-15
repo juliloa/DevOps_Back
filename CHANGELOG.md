@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.2](https://github.com/juliloa/DevOps_Back/compare/v2.0.1...v2.0.2) (2025-04-15)
+
+
+### Bug Fixes
+
+* Update views.py ([5f3101d](https://github.com/juliloa/DevOps_Back/commit/5f3101d1b0fc7952937ead989fdac97b9db6ef90))
+
 ## [2.0.1](https://github.com/juliloa/DevOps_Back/compare/v2.0.0...v2.0.1) (2025-04-13)
 
 
