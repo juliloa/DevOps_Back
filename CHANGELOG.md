@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.3](https://github.com/juliloa/DevOps_Back/compare/v2.0.2...v2.0.3) (2025-04-15)
+
+
+### Bug Fixes
+
+* Added # NOSONAR to ignore the unnecessary parameter warning ([77f0a5b](https://github.com/juliloa/DevOps_Back/commit/77f0a5bd8d8f0f51d94a9392226e7e7d7db38ad1))
+
 ## [2.0.2](https://github.com/juliloa/DevOps_Back/compare/v2.0.1...v2.0.2) (2025-04-15)
 
 
