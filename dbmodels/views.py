@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 
-def home():
+# NOSONAR: Ignora el warning de parámetro innecesario
+def home(request):
     return HttpResponse("Bienvenido al sistema LOGIVAG")
