@@ -21,6 +21,7 @@ from dbmodels.views import home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('login.urls')),
+    path('api/', include('login.urls')), 
+    path('api/', include('products.urls')),
     path('', home, name='home'),
 ]

@@ -26,9 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 SECRET_KEY = os.getenv("SECRET_KEY")
-
-#
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"  
 
 ALLOWED_HOSTS = []
 
@@ -44,10 +42,13 @@ INSTALLED_APPS = [
     'dbmodels',
     'rest_framework',
     'login',
+    'products',
 ]
+
 AUTHENTICATION_BACKENDS = [
     'login.auth_backend.CustomAuthBackend',
 ]
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
