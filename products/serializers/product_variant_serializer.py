@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from dbmodels.models import Products, ProductVariants, Inventory, Categories
+from dbmodels.models import ProductVariants, Inventory
 
 class ProductVariantsSerializer(serializers.ModelSerializer):
     stock = serializers.SerializerMethodField()
@@ -18,17 +18,3 @@ class ProductVariantsSerializer(serializers.ModelSerializer):
         # Obtener la bodega asociada con la variante
         inventory = Inventory.objects.filter(variant=obj).first()
         return inventory.warehouse.name if inventory else None
-
-
-class ProductSerializer(serializers.ModelSerializer):
-    variants = ProductVariantsSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Products
-        fields = ['id', 'name', 'description', 'category', 'image_url', 'variants']  
-
-
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Categories
-        fields = ['id', 'name']
