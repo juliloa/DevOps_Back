@@ -11,16 +11,14 @@ class ProductAttributeFilterView(APIView):
         size = request.query_params.get('size', None)
         material = request.query_params.get('material', None)
 
-
         filters = Q()
         if color:
-            filters &= Q(color=color)  
+            filters &= Q(attributes__color=color)
         if size:
-            filters &= Q(size=size)  
+            filters &= Q(attributes__size=size)
         if material:
-            filters &= Q(material=material) 
+            filters &= Q(attributes__material=material)
 
         variants = ProductVariants.objects.filter(filters)
-
-        serializer = ProductVariantsSerializer(variants, many=True)  
+        serializer = ProductVariantsSerializer(variants, many=True)
         return Response(serializer.data)
