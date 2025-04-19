@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.4](https://github.com/juliloa/DevOps_Back/compare/v2.0.3...v2.0.4) (2025-04-19)
+
+
+### Bug Fixes
+
+* Update attribute_filter.py ([68a33da](https://github.com/juliloa/DevOps_Back/commit/68a33dac212732d031ea955b1c9e8ecb1bb51637))
+
 ## [2.0.3](https://github.com/juliloa/DevOps_Back/compare/v2.0.2...v2.0.3) (2025-04-15)
 
 
