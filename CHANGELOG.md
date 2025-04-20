@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.1.0](https://github.com/juliloa/DevOps_Back/compare/v2.0.3...v2.1.0) (2025-04-20)
+
+
+### Features
+
+* Module Warehouses into Main ([#15](https://github.com/juliloa/DevOps_Back/issues/15)) ([0538017](https://github.com/juliloa/DevOps_Back/commit/0538017c147556397690f65205e399016d2b7359))
+
+
+### Bug Fixes
+
+* Update attribute_filter.py ([68a33da](https://github.com/juliloa/DevOps_Back/commit/68a33dac212732d031ea955b1c9e8ecb1bb51637))
+
 ## [2.0.3](https://github.com/juliloa/DevOps_Back/compare/v2.0.2...v2.0.3) (2025-04-15)
 
 
