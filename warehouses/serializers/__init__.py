@@ -1,0 +1,3 @@
+from .warehouses_serializer import WarehouseSerializer
+from .simple_wearhouses_serializers import SimpleWarehouseSerializer
+
