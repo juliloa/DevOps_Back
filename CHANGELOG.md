@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.1.1](https://github.com/juliloa/DevOps_Back/compare/v2.1.0...v2.1.1) (2025-05-02)
+
+
+### Bug Fixes
+
+* Added [@require](https://github.com/require)_http_methods decorator to restrict login_view to GET and POST methods only ([#18](https://github.com/juliloa/DevOps_Back/issues/18)) ([08493e1](https://github.com/juliloa/DevOps_Back/commit/08493e1adda2e2b20e67ae6a5d0bd0830dd76107))
+* **login:** organize and enforce GET and POST usage in login views ([#20](https://github.com/juliloa/DevOps_Back/issues/20)) ([6174500](https://github.com/juliloa/DevOps_Back/commit/6174500d1c2881acf1ec8afb0ddd8840124b1438))
+* Removed dependency on external scripts and added integrity to CDN resources ([50fea56](https://github.com/juliloa/DevOps_Back/commit/50fea5651c09132363892e5e841712710a0906a3))
+* silence unused request param warning in root_redirect view ([9538580](https://github.com/juliloa/DevOps_Back/commit/9538580a4a5320dea5c8a7cca2bb5301802aea81))
+
 ## [2.1.0](https://github.com/juliloa/DevOps_Back/compare/v2.0.3...v2.1.0) (2025-04-20)
 
 
