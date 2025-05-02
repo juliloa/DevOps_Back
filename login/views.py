@@ -3,10 +3,14 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from urllib.parse import urlparse, urljoin
 from django.conf import settings
+from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_http_methods
 
+@require_GET
 def root_redirect(_request):
     return redirect('login')
-
+    
+@require_http_methods(["GET", "POST"])
 def login_view(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -22,7 +26,7 @@ def login_view(request):
                 
                 parsed_url = urlparse(next_url)
                 if parsed_url.netloc == '' or parsed_url.netloc == request.get_host():
-                   
+                
                     return redirect(next_url)
                 else:
                     return redirect('catalogo-view') 
