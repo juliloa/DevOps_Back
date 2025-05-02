@@ -1,34 +1,31 @@
+
 from django.contrib.auth.backends import BaseBackend
 from django.contrib.auth.hashers import check_password
 from dbmodels.models.users import Users
+from django.utils import timezone  
 
 class CustomAuthBackend(BaseBackend):
-    def authenticate(self, request, email=None, password=None, role_name=None):
+    def authenticate(self, request, email=None, password=None):
         try:
-            print(f"[DEBUG] Email: {email}, Password: {password}, Role ID: {role_name}")
-            
             user = Users.objects.get(email=email)
-            print(f"[DEBUG] Usuario encontrado: {user.name}")
 
             if check_password(password, user.password):
-                print("[DEBUG] Contraseña válida")
+                user.last_login = timezone.now()
+                user.save()
 
-                # Validar el rol por ID (no por nombre)
-                if role_name and str(user.role.id) != str(role_name):
-                    print(f"[DEBUG] Rol inválido. Esperado {user.role.id}, recibido {role_name}")
-                    return None
+                # Simular los atributos que Django espera para login()
+                user.is_authenticated = True
+                user.is_active = True
+                user.is_anonymous = False
+                user.is_staff = getattr(user, 'is_staff', False)
+                user.get_username = lambda: user.email  
 
-                print("[DEBUG] Autenticación exitosa")
                 return user
-            else:
-                print("[DEBUG] Contraseña inválida")
-
         except Users.DoesNotExist:
-            print("[DEBUG] Usuario no encontrado")
+            return None
         except Exception as e:
             print(f"[ERROR] Excepción en auth backend: {e}")
-        
-        return None
+            return None
 
     def get_user(self, user_id):
         try:

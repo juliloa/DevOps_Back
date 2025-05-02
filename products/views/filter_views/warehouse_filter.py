@@ -5,6 +5,7 @@ from dbmodels.models import Products
 from products.serializers import ProductSerializer
 
 class ProductWarehouseFilterView(APIView):
+
     def get(self, request, warehouse_id):
         products = Products.objects.filter(
             variants__inventory__warehouse_id=warehouse_id
