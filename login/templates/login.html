@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="es" x-data="{ showPassword: false, rememberMe: false, error: '' }" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Sign In</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/alpinejs" defer></script>
     <style>
         /* Fondo dinámico con gradiente suave */
         @keyframes gradientAnimation {
@@ -64,6 +63,14 @@
         .line:nth-child(8) { animation-duration: 40s; animation-delay: -15s; }
         .line:nth-child(9) { animation-duration: 50s; animation-delay: -20s; }
         .line:nth-child(10) { animation-duration: 30s; animation-delay: -25s; }
+
+        /* Mostrar/Ocultar contraseña */
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 36px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body class="bg-gradient flex items-center justify-center min-h-screen relative">
@@ -87,7 +94,7 @@
         <h2 class="text-3xl font-semibold text-center mb-6 text-gray-800">Sign In</h2>
 
         <!-- Formulario de login -->
-        <form method="POST" action="{% url 'login_submit' %}"">
+        <form method="POST" action="{% url 'login_submit' %}">
             {% csrf_token %}
             <div class="mb-4">
                 <label for="email" class="block text-sm font-medium text-gray-700">Correo electrónico</label>
@@ -97,19 +104,10 @@
 
             <div class="mb-4 relative">
                 <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
-                <input :type="showPassword ? 'text' : 'password'" name="password" id="password" required
+                <input type="password" name="password" id="password" required
                     class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-indigo-200 focus:outline-none" />
-                    <button type="button" @click="showPassword = !showPassword"
-                        class="absolute right-3 top-[38px] text-gray-500 hover:text-indigo-600 focus:outline-none">
-                        <svg x-show="!showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5c3 0 5.5 2.5 5.5 5.5S15 16 12 16s-5.5-2.5-5.5-5.5S9 5 12 5zm0 0c-3 0-5.5 2.5-5.5 5.5S9 16 12 16s5.5-2.5 5.5-5.5S15 5 12 5z"/>
-                        </svg>
-                        <svg x-show="showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5c3 0 5.5 2.5 5.5 5.5S15 16 12 16s-5.5-2.5-5.5-5.5S9 5 12 5zm0 0c-3 0-5.5 2.5-5.5 5.5S9 16 12 16s5.5-2.5 5.5-5.5S15 5 12 5z"/>
-                        </svg>
-                    </button>
-                    
-                    
+                <!-- Botón para mostrar/ocultar la contraseña -->
+                <span class="toggle-password" onclick="togglePassword()">👁️</span>
             </div>
 
             {% if error %}
@@ -124,5 +122,14 @@
             </button>
         </form>
     </div>
+
+    <script>
+        // Función para mostrar u ocultar la contraseña
+        function togglePassword() {
+            var passwordField = document.getElementById('password');
+            var type = passwordField.type === 'password' ? 'text' : 'password';
+            passwordField.type = type;
+        }
+    </script>
 </body>
 </html>
