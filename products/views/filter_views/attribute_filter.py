@@ -1,24 +1,26 @@
-from django.db.models import Q
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from dbmodels.models import ProductVariants
-from products.serializers import ProductVariantsSerializer  
+
+from dbmodels.models import Products
+from django.shortcuts import render
+from django.views import View
 
 
-class ProductAttributeFilterView(APIView):
+class ProductAttributeFilterView(View):
     def get(self, request):
-        color = request.query_params.get('color', None)
-        size = request.query_params.get('size', None)
-        material = request.query_params.get('material', None)
 
-        filters = Q()
+        color = request.GET.get('color')
+        size = request.GET.get('size')
+        productos = Products.objects.all()  
+        
         if color:
-            filters &= Q(attributes__color=color)
+            productos = productos.filter(color=color)
         if size:
-            filters &= Q(attributes__size=size)
-        if material:
-            filters &= Q(attributes__material=material)
+            productos = productos.filter(size=size)
+        
+        return render(request, 'product_list.html', {'productos': productos})
 
-        variants = ProductVariants.objects.filter(filters)
-        serializer = ProductVariantsSerializer(variants, many=True)
-        return Response(serializer.data)
+
+class ProductListView(View):
+    def get(self, request):
+        # Lógica para obtener y mostrar productos
+        productos = Products.objects.all() 
+        return render(request, 'products.html', {'productos': productos})

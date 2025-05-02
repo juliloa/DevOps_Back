@@ -9,6 +9,9 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+LOGIN_URL = '/accounts/login/' 
+LOGIN_REDIRECT_URL = '/products/' 
+
 
 from pathlib import Path
 import os
@@ -30,6 +33,13 @@ DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
 ALLOWED_HOSTS = ['*']
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -43,12 +53,16 @@ INSTALLED_APPS = [
     'rest_framework',
     'login',
     'products',
-    'warehouses'
+    'warehouses',
+    'movements',
 ]
 
 AUTHENTICATION_BACKENDS = [
     'login.auth_backend.CustomAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]
+
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -71,15 +85,16 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware', 
+    
 ]
 
 ROOT_URLCONF = 'LOGIVAG.urls'
 
 TEMPLATES = [
     {
+        'DIRS': [BASE_DIR / 'templates'],
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -123,7 +138,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/

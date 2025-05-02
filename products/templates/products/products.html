@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Catálogo de Productos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="//unpkg.com/alpinejs" defer></script>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Barra de Navegación -->
+    <nav class="bg-gray-800 text-white p-4">
+        <div class="flex justify-between items-center">
+            <a href="/" class="text-2xl font-bold">Logivag</a>
+            <div class="space-x-4">
+                <a href="/" class="hover:bg-gray-700 px-4 py-2 rounded">Inicio</a>
+                <a href="#" class="hover:bg-gray-700 px-4 py-2 rounded">Movimientos</a>
+                <a href="#" class="hover:bg-gray-700 px-4 py-2 rounded">Cerrar sesión</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex p-6">
+        <!-- Sidebar de Filtros -->
+        <div class="w-1/4 bg-white p-4 rounded-lg shadow-md mr-6">
+            <h3 class="font-semibold text-xl mb-4">Filtros</h3>
+            
+            <!-- Filtro por categoría -->
+            <div class="mb-4">
+                <h4 class="font-semibold">Categoría</h4>
+                <select onchange="window.location.href=this.value" class="bg-white border border-gray-300 rounded p-2">
+                    <option value="" disabled selected>Seleccione una Categoría</option>
+                    <option value="{% url 'product-category-filter' category_id=1 %}">Ropa</option>
+                    <option value="{% url 'product-category-filter' category_id=2 %}">Tecnología</option>
+                </select>
+            </div>
+
+            <!-- Filtro por bodega -->
+            <div class="mb-4">
+                <h4 class="font-semibold">Bodega</h4>
+                <select onchange="window.location.href=this.value" class="bg-white border border-gray-300 rounded p-2">
+                    <option value="" disabled selected>Seleccione una Bodega</option>
+                    <option value="{% url 'product-warehouse-filter' warehouse_id=1 %}">Bodega Envigado</option>
+                    <option value="{% url 'product-warehouse-filter' warehouse_id=2 %}">Bodega Sabaneta</option>
+                    <option value="{% url 'product-warehouse-filter' warehouse_id=3 %}">Bodega Itagüí</option>
+                    <option value="{% url 'product-warehouse-filter' warehouse_id=4 %}">Bodega El Poblado</option>
+                    <option value="{% url 'product-warehouse-filter' warehouse_id=5 %}">Bodega Bello</option>
+                    <option value="{% url 'product-warehouse-filter' warehouse_id=6 %}">Bodega Girardota</option>
+                </select>
+            </div>
+
+            <!-- Filtro por precio -->
+            <form action="{% url 'product-price-filter' %}" method="get" class="mb-4">
+                <h4 class="font-semibold">Precio</h4>
+                <input type="number" name="min_price" placeholder="Min Price" class="w-full p-2 border rounded mb-2" />
+                <input type="number" name="max_price" placeholder="Max Price" class="w-full p-2 border rounded mb-4" />
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded">Filtrar</button>
+            </form>
+
+            <!-- Filtro por atributos -->
+            <form action="{% url 'product-attribute-filter' %}" method="get">
+                <h4 class="font-semibold">Atributos</h4>
+                <input type="text" name="color" placeholder="Color" class="w-full p-2 border rounded mb-2" />
+                <input type="text" name="size" placeholder="Talla" class="w-full p-2 border rounded mb-4" />
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded">Filtrar</button>
+            </form>
+        </div>
+
+        <!-- Contenido principal: Catálogo de Productos -->
+        <main class="w-3/4">
+            <h1 class="text-3xl font-semibold mb-6">Catálogo de Productos</h1>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {% for producto in productos %}
+                    <div class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-all">
+                        <img src="{{ producto.image_url }}" alt="{{ producto.name }}" class="w-full h-48 object-cover rounded-lg mb-4">
+                        <h2 class="text-xl font-semibold">{{ producto.name }}</h2>
+                        <p class="text-gray-600 text-sm mb-4">{{ producto.description }}</p>
+                        <p class="text-lg font-bold">Categoría: {{ producto.category.name }}</p>
+                        <div class="mt-4 flex justify-between items-center">
+                            <a href="{% url 'product-detail' producto.id %}" class="text-blue-600 font-semibold hover:underline">
+                                Ver producto
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

@@ -5,6 +5,7 @@ from dbmodels.models import Products
 from products.serializers import ProductSerializer
 
 class ProductPriceFilterView(APIView):
+
     def get(self, request):
         try:
             min_price = Decimal(request.query_params.get('min_price', '0'))
@@ -17,12 +18,12 @@ class ProductPriceFilterView(APIView):
         except (InvalidOperation, TypeError):
             return Response({"error": "Invalid max_price"}, status=400)
 
-        products = Products.objects.all()
+        productos = Products.objects.all()
         if max_price is not None:
-            products = products.filter(variants__price__gte=min_price, variants__price__lte=max_price)
+            productos = productos.filter(variants__price__gte=min_price, variants__price__lte=max_price)
         else:
-            products = products.filter(variants__price__gte=min_price)
+            productos = productos.filter(variants__price__gte=min_price)
 
-        products = products.distinct()
-        serializer = ProductSerializer(products, many=True)
+        productos = productos.distinct()
+        serializer = ProductSerializer(productos, many=True)
         return Response(serializer.data)

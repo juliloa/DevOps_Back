@@ -1,12 +1,9 @@
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from django.shortcuts import render
 from dbmodels.models import Products
-from products.serializers import ProductSerializer
 
-
-class ProductListView(APIView):
-    def get(self, request):
-        products = Products.objects.all()
-        serializer = ProductSerializer(products, many=True)
-        return Response(serializer.data)
+def catalogo_view(request):
+    
+    productos = Products.objects.all()
+    
+    return render(request, 'products/products.html', {'productos': productos})

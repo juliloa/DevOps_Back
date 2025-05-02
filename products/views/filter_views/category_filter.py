@@ -1,14 +1,15 @@
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from django.views.generic import ListView
 from dbmodels.models import Products
-from products.serializers import ProductSerializer
+from django.http import Http404
 
-class ProductCategoryFilterView(APIView):
-    def get(self, request, category_id):
-        products = Products.objects.filter(category_id=category_id)
-        if not products:
-            return Response({"detail": "No products found for this category"}, status=404)
-
-        serializer = ProductSerializer(products, many=True)
-        return Response(serializer.data)
+class ProductCategoryFilterView(ListView):
+    model = Products
+    template_name = 'products/category_filter.html'  
+    context_object_name = 'productos'
+    
+    def get_queryset(self):
+        category_id = self.kwargs['category_id'] 
+        productos = Products.objects.filter(category_id=category_id)
+        if not productos:
+            raise Http404("No products found for this category")
+        return productos

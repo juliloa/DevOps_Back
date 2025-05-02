@@ -11,6 +11,8 @@ class Users(models.Model):
     role = models.ForeignKey(Roles, models.DO_NOTHING)
     status = models.BooleanField(blank=True, null=True)
 
+    last_login = models.DateTimeField(null=True, blank=True)
+
     class Meta:
         managed = False
         db_table = 'users'
