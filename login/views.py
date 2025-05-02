@@ -4,7 +4,7 @@ from django.contrib import messages
 from urllib.parse import urlparse, urljoin
 from django.conf import settings
 
-def root_redirect(request):
+def root_redirect(_request):
     return redirect('login')
 
 def login_view(request):
