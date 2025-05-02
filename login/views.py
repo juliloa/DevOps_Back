@@ -1,38 +1,33 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from urllib.parse import urlparse, urljoin
-from django.conf import settings
-from django.views.decorators.http import require_GET
-from django.views.decorators.http import require_http_methods
+from urllib.parse import urlparse
+from django.views.decorators.http import require_GET, require_POST
 
 @require_GET
 def root_redirect(_request):
-    return redirect('login')
-    
-@require_http_methods(["GET", "POST"])
-def login_view(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
+    return redirect('login')  
 
-        user = authenticate(request, email=email, password=password)
+@require_GET
+def login_form_view(request):
+    return render(request, 'login.html') 
 
-        if user is not None:
-            login(request, user)
+@require_POST
+def login_submit_view(request):
+    email = request.POST.get('email')
+    password = request.POST.get('password')
 
-            next_url = request.GET.get('next')
-            if next_url:
-                
-                parsed_url = urlparse(next_url)
-                if parsed_url.netloc == '' or parsed_url.netloc == request.get_host():
-                
-                    return redirect(next_url)
-                else:
-                    return redirect('catalogo-view') 
-            return redirect('catalogo-view') 
-        else:
-            messages.error(request, 'Credenciales inválidas.')
-            return render(request, 'login.html')
+    user = authenticate(request, email=email, password=password)
 
-    return render(request, 'login.html')
+    if user is not None:
+        login(request, user)
+
+        next_url = request.GET.get('next')
+        if next_url:
+            parsed_url = urlparse(next_url)
+            if parsed_url.netloc == '' or parsed_url.netloc == request.get_host():
+                return redirect(next_url)
+        return redirect('catalogo-view')
+    else:
+        messages.error(request, 'Credenciales inválidas.')
+        return render(request, 'login.html')
