@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from dbmodels.models import Products, Warehouses
+from django.views.decorators.http import require_GET 
 
+@require_GET
 def product_warehouse_filter_view(request, warehouse_id):
     warehouse = get_object_or_404(Warehouses, pk=warehouse_id)
     

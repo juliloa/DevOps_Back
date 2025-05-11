@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from dbmodels.models import Products
 from django.db.models import Q
+from django.views.decorators.http import require_GET 
 
+@require_GET
 def product_filter_by_attributes_view(request):
     # Obtener todos los productos
     productos = Products.objects.all()
@@ -12,7 +14,7 @@ def product_filter_by_attributes_view(request):
     # Recopilar todos los valores de los atributos
     for producto in productos:
         for variant in producto.variants.all():
-            if variant.attributes:  # Si el atributo existe
+            if variant.attributes: 
                 for key, value in variant.attributes.items():
                     atributos_values.setdefault(key, set()).add(value)
 

@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from dbmodels.models import ProductVariants, Inventory
+from django.views.decorators.http import require_GET
 import json
 
+@require_GET  
 def warehouse_map_view(request):
-    # Listar variantes disponibles
+    
     variants = ProductVariants.objects.select_related('product').all()
 
     # Obtener información completa para el mapa

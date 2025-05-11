@@ -33,8 +33,8 @@ def login_submit_view(request):
         response = HttpResponseRedirect('/products/')
 
         
-        response.set_cookie('access_token', str(refresh.access_token), httponly=True, secure=False, samesite='Lax')
-        response.set_cookie('refresh_token', str(refresh), httponly=True, secure=False, samesite='Lax')
+        response.set_cookie('access_token', str(refresh.access_token), httponly=True, secure=True, samesite='Lax')
+        response.set_cookie('refresh_token', str(refresh), httponly=True, secure=True, samesite='Lax')
 
         logger.info(f"Token de acceso configurado: {refresh.access_token}")
 
@@ -43,8 +43,7 @@ def login_submit_view(request):
         messages.error(request, 'Credenciales inválidas.')
         return render(request, 'login.html')
 
-
-
+@require_POST
 def logout_view(request):
     response = HttpResponseRedirect('/login/')
     response.delete_cookie('access_token')

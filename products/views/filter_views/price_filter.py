@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from decimal import Decimal, InvalidOperation
 from dbmodels.models import Products
+from django.views.decorators.http import require_GET 
 
+@require_GET
 def product_price_filter_view(request):
     min_price = request.GET.get('min_price')
     max_price = request.GET.get('max_price')

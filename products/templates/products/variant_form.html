@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
+
 {% block content %}
 <div class="max-w-xl mx-auto p-6">
     <h2 class="text-2xl font-bold mb-4">
         {% if variant %}Editar{% else %}Crear{% endif %} Variante
     </h2>
-    <form method="post" id="variant-form">
-        {% csrf_token %}
+    <form id="variant-form" method="post" action="{% if variant %}{% url 'variant-edit-post' variant.id %}{% else %}{% url 'variant-create-post' product_id=product.id %}{% endif %}">
+    {% csrf_token %}
         <div class="mb-4">
             <label class="block font-semibold" for="variant_code">Código de Variante:</label>
             <input id="variant_code" type="text" name="variant_code" value="{{ variant.variant_code|default:'' }}" class="w-full p-2 border rounded" required>
@@ -16,15 +17,15 @@
             {% if variant %}
                 {% for key, value in variant.attributes.items %}
                     <div class="attribute-row">
-                        <input type="text" name="attribute_name" placeholder="Nombre del atributo" value="{{ key }}" class="w-full p-2 border rounded mb-2">
-                        <input type="text" name="attribute_value" placeholder="Valor del atributo" value="{{ value }}" class="w-full p-2 border rounded mb-2">
+                        <input type="text" name="attribute_name_{{ forloop.counter }}" placeholder="Nombre del atributo" value="{{ key }}" class="w-full p-2 border rounded mb-2">
+                        <input type="text" name="attribute_value_{{ forloop.counter }}" placeholder="Valor del atributo" value="{{ value }}" class="w-full p-2 border rounded mb-2">
                         <button type="button" class="remove-attribute bg-red-600 text-white px-2 py-1 rounded">Eliminar</button>
                     </div>
                 {% endfor %}
             {% else %}
                 <div class="attribute-row">
-                    <input type="text" name="attribute_name" placeholder="Nombre del atributo" class="w-full p-2 border rounded mb-2">
-                    <input type="text" name="attribute_value" placeholder="Valor del atributo" class="w-full p-2 border rounded mb-2">
+                    <input type="text" name="attribute_name_1" placeholder="Nombre del atributo" class="w-full p-2 border rounded mb-2">
+                    <input type="text" name="attribute_value_1" placeholder="Valor del atributo" class="w-full p-2 border rounded mb-2">
                     <button type="button" class="remove-attribute bg-red-600 text-white px-2 py-1 rounded">Eliminar</button>
                 </div>
             {% endif %}
@@ -58,11 +59,12 @@
 
 <script>
     document.getElementById('add-attribute').addEventListener('click', function() {
+        var attributeCount = document.querySelectorAll('.attribute-row').length + 1;
         var newRow = document.createElement('div');
         newRow.classList.add('attribute-row');
         newRow.innerHTML = `
-            <input type="text" name="attribute_name" placeholder="Nombre del atributo" class="w-full p-2 border rounded mb-2">
-            <input type="text" name="attribute_value" placeholder="Valor del atributo" class="w-full p-2 border rounded mb-2">
+            <input type="text" name="attribute_name_${attributeCount}" placeholder="Nombre del atributo" class="w-full p-2 border rounded mb-2">
+            <input type="text" name="attribute_value_${attributeCount}" placeholder="Valor del atributo" class="w-full p-2 border rounded mb-2">
             <button type="button" class="remove-attribute bg-red-600 text-white px-2 py-1 rounded">Eliminar</button>
         `;
         document.getElementById('attributes-container').appendChild(newRow);
@@ -84,8 +86,8 @@
     document.getElementById('variant-form').addEventListener('submit', function(event) {
         var attributes = {};
         document.querySelectorAll('.attribute-row').forEach(function(row) {
-            var name = row.querySelector('[name="attribute_name"]').value;
-            var value = row.querySelector('[name="attribute_value"]').value;
+            var name = row.querySelector('[name^="attribute_name_"]').value;
+            var value = row.querySelector('[name^="attribute_value_"]').value;
             if (name && value) {
                 attributes[name] = value;
             }
@@ -99,4 +101,5 @@
         this.appendChild(attributesInput);
     });
 </script>
+
 {% endblock %}

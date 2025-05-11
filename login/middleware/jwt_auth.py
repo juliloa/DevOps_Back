@@ -58,7 +58,7 @@ class JWTMiddleware:
             new_access_token = str(refresh.access_token)
             logger.info("Nuevo access token generado")
             response = HttpResponseRedirect(request.path)
-            response.set_cookie('access_token', new_access_token, httponly=True, secure=False, samesite='Lax')
+            response.set_cookie('access_token', new_access_token, httponly=True, secure=True, samesite='Lax')
 
             validated_token = JWTAuthentication().get_validated_token(new_access_token)
             user = JWTAuthentication().get_user(validated_token)
@@ -72,12 +72,10 @@ class JWTMiddleware:
             logger.error(f"Error al renovar el token de acceso: {str(e)}")
             return self.clear_session(request)
 
-    def clear_session(self, request):
+    def clear_session(self,_request):
         """ Limpia la sesión del usuario. """
         logger.info("Limpiando sesión debido a error de autenticación.")
-        # Aquí agregarías el código necesario para limpiar la sesión
-        return HttpResponseRedirect(reverse('login'))  # Redirige a la página de login
+        return HttpResponseRedirect(reverse('login'))  
 
     def _handle_login_path(self, request):
-        """ Si es la ruta de login, deja pasar la solicitud. """
         return self.get_response(request)

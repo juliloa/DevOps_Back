@@ -9,7 +9,7 @@
             window.history.back();
         }
     </script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@%5E2/dist/tailwind.min.css" integrity="sha384-HtMZLkYo+pR5/u7zCzXxMJP6QoNnQJt1qkHM0EaOPvGDIzaVZbmYr/TlvUZ/sKAg" crossorigin="anonymous">
 </head>
 <body class="flex flex-col min-h-screen bg-gray-100 text-gray-900">
 
@@ -25,7 +25,10 @@
             <div class="flex items-center space-x-4 ml-auto">
                 <a href="{% url 'warehouse-map' %}" class="hover:bg-gray-700 px-4 py-2 rounded">Mapa</a>
                 <a href="{% url 'movement-list' %}" class="hover:bg-gray-700 px-4 py-2 rounded">Movimientos</a>
-                <a href="{% url 'logout' %}" class="hover:bg-gray-700 px-4 py-2 rounded">Cerrar sesión</a>
+                    <form method="POST" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit">Cerrar sesión</button>
+                    </form>
             </div>
         </div>
     </nav>
