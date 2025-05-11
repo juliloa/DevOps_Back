@@ -67,6 +67,6 @@ class JWTMiddleware:
             logger.error(f"Error al renovar el token de acceso: {str(e)}")
             return self.clear_session(request)
 
-    def clear_session(self, request):
+    def clear_session(self, _request):
         logger.info("Limpiando sesión debido a error de autenticación.")
         return HttpResponseRedirect(reverse('login'))
