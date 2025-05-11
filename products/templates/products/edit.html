@@ -5,24 +5,24 @@
     <form method="post">
         {% csrf_token %}
         <div class="mb-4">
-            <label class="block font-semibold">Nombre</label>
-            <input name="name" value="{{ product.name }}" class="w-full border p-2 rounded" required>
+            <label class="block font-semibold" for="name">Nombre</label>
+            <input id="name" name="name" value="{{ product.name }}" class="w-full border p-2 rounded" required>
         </div>
         <div class="mb-4">
-            <label class="block font-semibold">Descripción</label>
-            <textarea name="description" class="w-full border p-2 rounded">{{ product.description }}</textarea>
+            <label class="block font-semibold" for="description">Descripción</label>
+            <textarea id="description" name="description" class="w-full border p-2 rounded">{{ product.description }}</textarea>
         </div>
         <div class="mb-4">
-            <label class="block font-semibold">Categoría</label>
-            <select name="category" class="w-full border p-2 rounded" required>
+            <label class="block font-semibold" for="category">Categoría</label>
+            <select id="category" name="category" class="w-full border p-2 rounded" required>
                 {% for cat in categories %}
                     <option value="{{ cat.id }}" {% if cat.id == product.category.id %}selected{% endif %}>{{ cat.name }}</option>
                 {% endfor %}
             </select>
         </div>
         <div class="mb-4">
-            <label class="block font-semibold">URL de imagen</label>
-            <input name="image_url" value="{{ product.image_url }}" class="w-full border p-2 rounded">
+            <label class="block font-semibold" for="image_url">URL de imagen</label>
+            <input id="image_url" name="image_url" value="{{ product.image_url }}" class="w-full border p-2 rounded">
         </div>
         <button class="bg-yellow-600 text-white px-4 py-2 rounded">Guardar cambios</button>
     </form>

@@ -23,7 +23,7 @@ class ProductDetailView(View):
             'producto': producto,
             'variantes': variantes_con_inventario
         })
-    
+        
 def variant_create(request, product_id):
     if request.method == 'POST':
         variant_code = request.POST.get('variant_code')
@@ -84,7 +84,7 @@ def variant_edit(request, variant_id):
         'warehouses': warehouses
     })
 
-def variant_delete(request, variant_id):
+def variant_delete(_request, variant_id):
     variant = get_object_or_404(ProductVariants, pk=variant_id)
     product_id = variant.product_id
     variant.delete()

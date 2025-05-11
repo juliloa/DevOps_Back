@@ -5,24 +5,32 @@
     <form method="post">
         {% csrf_token %}
         <div class="mb-4">
-            <label class="block font-semibold">Nombre</label>
-            <input name="name" class="w-full border p-2 rounded" required>
+            <label class="block font-semibold">
+                Nombre
+                <input name="name" class="w-full border p-2 rounded" required>
+            </label>
         </div>
         <div class="mb-4">
-            <label class="block font-semibold">Descripción</label>
-            <textarea name="description" class="w-full border p-2 rounded"></textarea>
+            <label class="block font-semibold">
+                Descripción
+                <textarea name="description" class="w-full border p-2 rounded"></textarea>
+            </label>
         </div>
         <div class="mb-4">
-            <label class="block font-semibold">Categoría</label>
-            <select name="category" class="w-full border p-2 rounded" required>
-                {% for cat in categories %}
-                    <option value="{{ cat.id }}">{{ cat.name }}</option>
-                {% endfor %}
-            </select>
+            <label class="block font-semibold">
+                Categoría
+                <select name="category" class="w-full border p-2 rounded" required>
+                    {% for cat in categories %}
+                        <option value="{{ cat.id }}">{{ cat.name }}</option>
+                    {% endfor %}
+                </select>
+            </label>
         </div>
         <div class="mb-4">
-            <label class="block font-semibold">URL de imagen</label>
-            <input name="image_url" class="w-full border p-2 rounded">
+            <label class="block font-semibold">
+                URL de imagen
+                <input name="image_url" class="w-full border p-2 rounded">
+            </label>
         </div>
         <button class="bg-blue-600 text-white px-4 py-2 rounded">Crear</button>
     </form>

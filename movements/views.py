@@ -7,6 +7,9 @@ from django.views.decorators.http import require_GET, require_POST
 from dbmodels.models import Movements, Inventory
 from .MovementForm import MovementForm
 
+# Define constant for template paths
+MOVEMENT_FORM_TEMPLATE = 'movements/movement_form.html'
+MOVEMENT_LIST_TEMPLATE = 'movements/movement_list.html'
 
 @require_GET
 def available_warehouses_api(request):
@@ -23,13 +26,13 @@ def available_warehouses_api(request):
 @require_GET
 def movement_list_view(request):
     movements = Movements.objects.all()
-    return render(request, 'movements/movement_list.html', {'movements': movements})
+    return render(request, MOVEMENT_LIST_TEMPLATE, {'movements': movements})
 
 
 @require_GET
 def movement_create_get_view(request):
     form = MovementForm()
-    return render(request, 'movements/movement_form.html', {'form': form})
+    return render(request, MOVEMENT_FORM_TEMPLATE, {'form': form})
 
 
 from django.core.exceptions import ValidationError
@@ -50,14 +53,14 @@ def movement_create_post_view(request):
 
         if not inv or inv.quantity < movement.quantity:
             messages.error(request, "Stock insuficiente en la bodega de origen.")
-            return render(request, 'movements/movement_form.html', {'form': form})
+            return render(request, MOVEMENT_FORM_TEMPLATE, {'form': form})
 
         movement.save()
         messages.success(request, "Movimiento creado correctamente.")
         return redirect('movement-list')
     else:
         messages.error(request, "Hubo un error al crear el movimiento.")
-        return render(request, 'movements/movement_form.html', {'form': form})
+        return render(request, MOVEMENT_FORM_TEMPLATE, {'form': form})
 
 
 @require_POST
@@ -115,3 +118,4 @@ def cancel_movement(request, pk):
 
     messages.success(request, "Movimiento cancelado correctamente.")
     return redirect('movement-list')
+

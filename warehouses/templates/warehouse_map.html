@@ -22,9 +22,9 @@
             <!-- Card de detalles de la variante -->
             <div id="variantInfo" class="hidden bg-gray-50 rounded-xl p-4 border mt-4 shadow-sm space-y-2">
                 <div class="flex items-center space-x-4">
-                    <img id="variantImage" src="" alt="Imagen del producto" class="w-20 h-20 object-cover rounded-lg border" />
+                    <img id="variantImage" src="" alt="Producto" class="w-20 h-20 object-cover rounded-lg border" />
                     <div>
-                        <h3 id="variantProductName" class="text-lg font-bold"></h3>
+                        <h3 id="variantProductName" class="text-lg font-bold">Nombre del producto</h3> <!-- Asegúrate de que tenga contenido -->
                         <p id="variantCategory" class="text-sm text-gray-600"></p>
                     </div>
                 </div>
@@ -49,81 +49,66 @@
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const map = L.map("map").setView([6.2442, -75.5812], 11);
-
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-            attribution: "&copy; OpenStreetMap contributors",
-        }).addTo(map);
-
-        const inventoryData = JSON.parse(`{{ inventory_data|escapejs }}`);
-
-        let currentMarkers = [];
-        let selectedVariant = null;
-
-        function updateMap(variantId) {
-            // Limpiar marcadores actuales
-            currentMarkers.forEach(marker => map.removeLayer(marker));
-            currentMarkers = [];
-
-            const filtered = inventoryData.filter(item => !variantId || item.variant_id == variantId);
-
-            filtered.forEach(item => {
-                const lat = item.warehouse.latitude;
-                const lon = item.warehouse.longitude;
-
-                if (lat && lon) {
-                    const marker = L.marker([lat, lon])
-                        .addTo(map)
-                        .bindPopup(`
-                            <strong>${item.variant_name}</strong><br>
-                            Bodega: ${item.warehouse.name}<br>
-                            Cantidad: ${item.quantity}
-                        `);
-                    currentMarkers.push(marker);
-                }
-            });
-
-            if (filtered.length > 0) {
-                const first = filtered[0].warehouse;
-                map.setView([first.latitude, first.longitude], 13);
+document.addEventListener("DOMContentLoaded", function () {
+    const map = L.map("map").setView([6.2442, -75.5812], 11);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "&copy; OpenStreetMap contributors",
+    }).addTo(map);
+    const inventoryData = JSON.parse(`{{ inventory_data|escapejs }}`);
+    let currentMarkers = [];
+    
+    function updateMap(variantId) {
+        // Limpiar marcadores actuales
+        currentMarkers.forEach(marker => map.removeLayer(marker));
+        currentMarkers = [];
+        const filtered = inventoryData.filter(item => !variantId || item.variant_id == variantId);
+        filtered.forEach(item => {
+            const lat = item.warehouse.latitude;
+            const lon = item.warehouse.longitude;
+            if (lat && lon) {
+                const marker = L.marker([lat, lon])
+                    .addTo(map)
+                    .bindPopup(`
+                        <strong>${item.variant_name}</strong><br>
+                        Bodega: ${item.warehouse.name}<br>
+                        Cantidad: ${item.quantity}
+                    `);
+                currentMarkers.push(marker);
             }
-
-            // Mostrar detalles de la tarjeta
-            const card = document.getElementById("variantInfo");
-            if (variantId && filtered.length > 0) {
-                const first = filtered[0];
-                const totalStock = filtered.reduce((sum, i) => sum + i.quantity, 0);
-
-                document.getElementById("variantImage").src = first.product_image;
-                document.getElementById("variantProductName").textContent = first.product_name;
-                document.getElementById("variantCategory").textContent = first.category_name;
-                document.getElementById("variantCode").textContent = first.variant_code;
-                document.getElementById("variantPrice").textContent = first.price;
-                document.getElementById("variantStock").textContent = totalStock;
-                document.getElementById("variantAttributes").textContent = first.attributes;
-
-                // Establecer los datos de la variante seleccionada
-                selectedVariant = first;
-
-                // Mostrar la tarjeta de detalles
-                card.classList.remove("hidden");
-
-            } 
+        });
+        if (filtered.length > 0) {
+            const first = filtered[0].warehouse;
+            map.setView([first.latitude, first.longitude], 13);
         }
+        // Mostrar detalles de la tarjeta
+        const card = document.getElementById("variantInfo");
+        if (variantId && filtered.length > 0) {
+            const first = filtered[0];
+            const totalStock = filtered.reduce((sum, i) => sum + i.quantity, 0);
+            document.getElementById("variantImage").src = first.product_image;
+            document.getElementById("variantProductName").textContent = first.product_name;
+            document.getElementById("variantCategory").textContent = first.category_name;
+            document.getElementById("variantCode").textContent = first.variant_code;
+            document.getElementById("variantPrice").textContent = first.price;
+            document.getElementById("variantStock").textContent = totalStock;
+            document.getElementById("variantAttributes").textContent = first.attributes;
+            // Mostrar la tarjeta de detalles
+            card.classList.remove("hidden");
+        }
+    }
 
-        // Evento al seleccionar variante
-        document.getElementById("variantFilter").addEventListener("change", function () {
-            updateMap(this.value);
-        });
-
-        // Carga inicial sin filtros
-        updateMap(null);
-
-        document.getElementById("clearFilter").addEventListener("click", function () {
-            document.getElementById("variantFilter").value = "";
-            updateMap(null);
-        });
+    // Evento al seleccionar variante
+    document.getElementById("variantFilter").addEventListener("change", function () {
+        updateMap(this.value);
     });
+
+    // Carga inicial sin filtros
+    updateMap(null);
+
+    document.getElementById("clearFilter").addEventListener("click", function () {
+        document.getElementById("variantFilter").value = "";
+        updateMap(null);
+    });
+});
 </script>
 {% endblock %}
