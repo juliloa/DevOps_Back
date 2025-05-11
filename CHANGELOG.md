@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.3.0](https://github.com/juliloa/DevOps_Back/compare/v2.2.0...v2.3.0) (2025-05-11)
+
+
+### Features
+
+* Complete user system: authentication, password reset, user creation/edit/delete, and Tailwind CSS forms. ([#24](https://github.com/juliloa/DevOps_Back/issues/24)) ([fef2de2](https://github.com/juliloa/DevOps_Back/commit/fef2de24c810f89cbf3b58edb39dbc4965404025))
+
+
+### Bug Fixes
+
+* mark unused request parameter with _ ([79bb34c](https://github.com/juliloa/DevOps_Back/commit/79bb34c64bf2b40134a0d65e602688da12f41bd5))
+
 ## [2.2.0](https://github.com/juliloa/DevOps_Back/compare/v2.1.1...v2.2.0) (2025-05-11)
 
 
