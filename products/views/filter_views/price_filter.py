@@ -1,29 +1,34 @@
+from django.shortcuts import render
 from decimal import Decimal, InvalidOperation
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from dbmodels.models import Products
-from products.serializers import ProductSerializer
+from django.views.decorators.http import require_GET 
 
-class ProductPriceFilterView(APIView):
+@require_GET
+def product_price_filter_view(request):
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
 
-    def get(self, request):
-        try:
-            min_price = Decimal(request.query_params.get('min_price', '0'))
-        except (InvalidOperation, TypeError):
-            return Response({"error": "Invalid min_price"}, status=400)
+    try:
+        min_price = Decimal(min_price) if min_price else Decimal('0')
+    except (InvalidOperation, TypeError):
+        min_price = Decimal('0')
 
-        max_price_param = request.query_params.get('max_price')
-        try:
-            max_price = Decimal(max_price_param) if max_price_param else None
-        except (InvalidOperation, TypeError):
-            return Response({"error": "Invalid max_price"}, status=400)
+    try:
+        max_price = Decimal(max_price) if max_price else None
+    except (InvalidOperation, TypeError):
+        max_price = None
 
-        productos = Products.objects.all()
-        if max_price is not None:
-            productos = productos.filter(variants__price__gte=min_price, variants__price__lte=max_price)
-        else:
-            productos = productos.filter(variants__price__gte=min_price)
+    productos = Products.objects.all()
+    if max_price is not None:
+        productos = productos.filter(variants__price__gte=min_price, variants__price__lte=max_price)
+    else:
+        productos = productos.filter(variants__price__gte=min_price)
 
-        productos = productos.distinct()
-        serializer = ProductSerializer(productos, many=True)
-        return Response(serializer.data)
+    productos = productos.distinct()
+
+    context = {
+        'productos': productos,
+        'min_price': min_price,
+        'max_price': max_price
+    }
+    return render(request, 'products/products.html', context)

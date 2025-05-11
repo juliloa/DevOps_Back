@@ -1,3 +1,5 @@
+{%load static%}
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,48 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Sign In</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <style>
-        /* Fondo dinámico con gradiente suave */
-        @keyframes gradientAnimation {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-
-        .bg-gradient {
-            background: linear-gradient(45deg, #a3bffa, #3b82f6, #9333ea, #f43f5e);
-            background-size: 400% 400%;
-            animation: gradientAnimation 10s ease infinite;
-        }
-
-        /* Estilos para la visibilidad de la contraseña */
-        #toggle-password:checked ~ .password-field {
-            font-family: sans-serif;
-        }
-
-        #toggle-password:checked ~ .password-field input {
-            -webkit-text-security: none;
-        }
-
-        #toggle-password:checked ~ .password-field .toggle-password {
-            visibility: visible;
-        }
-
-        .toggle-password {
-            position: absolute;
-            right: 10px;
-            top: 36px;
-            cursor: pointer;
-            visibility: hidden;
-        }
-
-    </style>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
 </head>
 <body class="bg-gradient flex items-center justify-center min-h-screen relative">
 
@@ -67,10 +28,6 @@
                 <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
                 <input type="password" name="password" id="password" required
                     class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-indigo-200 focus:outline-none" />
-                
-                <!-- Checkbox para mostrar/ocultar la contraseña -->
-                <input type="checkbox" id="toggle-password" class="hidden">
-                <label for="toggle-password" class="toggle-password">👁️</label>
             </div>
 
             {% if error %}

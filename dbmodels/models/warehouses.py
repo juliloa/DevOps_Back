@@ -13,3 +13,6 @@ class Warehouses(models.Model):
     class Meta:
         managed = False
         db_table = 'warehouses'
+
+    def __str__(self):
+        return self.name

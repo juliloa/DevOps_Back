@@ -1,31 +1,63 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ producto.name }}</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100 p-6">
+{% extends 'base.html' %}
 
-    <div class="bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto">
-        <h1 class="text-3xl font-bold mb-2">{{ producto.name }}</h1>
-        <p class="text-gray-700 mb-4">{{ producto.description }}</p>
-
-        <h2 class="text-2xl font-semibold mb-4">Variantes disponibles</h2>
-
-        <div class="space-y-4">
-            {% for variante in variantes %}
-                <div class="border p-4 rounded bg-gray-50">
-                    <p><strong>Atributos:</strong> {{ variante.attributes }}</p>
-                    <p><strong>Precio:</strong> ${{ variante.price }}</p>
-                    <p><strong>Stock:</strong> {{ variante.stock }}</p>
-                    <p><strong>Bodega:</strong> {{ variante.warehouse }}</p>
-                </div>
-            {% empty %}
-                <p>No hay variantes para este producto.</p>
-            {% endfor %}
-        </div>
+{% block content %}
+<div class="p-6 max-w-4xl mx-auto">
+    <!-- Encabezado de Producto -->
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-800">{{ producto.name }}</h1>
     </div>
 
-</body>
-</html>
+    <!-- Descripción del Producto -->
+    <p class="text-gray-700 mb-8">{{ producto.description }}</p>
+
+    <!-- Crear Variante -->
+    <div class="mb-6 flex justify-between items-center">
+        <h2 class="text-2xl font-semibold text-gray-800">Variantes disponibles</h2>
+        <a href="{% url 'variant-create' producto.id %}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition duration-200">
+            + Crear Variante
+        </a>
+    </div>
+
+    <!-- Lista de Variantes -->
+    <div class="space-y-6">
+        {% for variante in variantes %}
+            <div class="border border-gray-300 p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition duration-300">
+                <!-- Atributos de la Variante -->
+                <div class="mb-4">
+                    <strong class="text-lg text-gray-800">Atributos:</strong>
+                    <ul class="list-disc list-inside mt-2 text-gray-600">
+                        {% for key, value in variante.attributes.items %}
+                            <li><span class="font-semibold">{{ key|capfirst }}:</span> {{ value }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- Precio -->
+                <p class="text-lg text-gray-800 mb-2"><strong>Precio:</strong> ${{ variante.price }}</p>
+
+                <!-- Stock y Bodega -->
+                <p class="text-lg text-gray-800 mb-4"><strong>Stock:</strong> {{ variante.inventory.quantity|default:"N/A" }}</p>
+                <p class="text-lg text-gray-800 mb-4"><strong>Bodega:</strong> {{ variante.inventory.warehouse.name|default:"N/A" }}</p>
+
+                <!-- Acciones -->
+                <div class="flex space-x-4">
+                    <!-- Editar -->
+                    <a href="{% url 'variant-edit' variante.id %}" class="text-blue-600 hover:text-blue-700 transition duration-200">
+                        <i class="fas fa-edit mr-2"></i> Editar
+                    </a>
+
+                    <!-- Eliminar -->
+                    <form method="post" action="{% url 'variant-delete' variante.id %}" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta variante?');">
+                        {% csrf_token %}
+                        <button type="submit" class="text-red-600 hover:text-red-700 transition duration-200">
+                            <i class="fas fa-trash-alt mr-2"></i> Eliminar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-gray-600">No hay variantes para este producto.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
