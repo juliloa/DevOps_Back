@@ -10,3 +10,6 @@ class ProductVariants(models.Model):
     class Meta:
         managed = False  
         db_table = 'product_variants'
+
+    def __str__(self):
+        return self.variant_code

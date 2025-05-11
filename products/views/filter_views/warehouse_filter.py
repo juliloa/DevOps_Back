@@ -1,18 +1,18 @@
+from django.shortcuts import render, get_object_or_404
+from dbmodels.models import Products, Warehouses
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from dbmodels.models import Products
-from products.serializers import ProductSerializer
+def product_warehouse_filter_view(request, warehouse_id):
+    warehouse = get_object_or_404(Warehouses, pk=warehouse_id)
+    
+    # Filtrar productos que tienen stock en esa bodega
+    productos = Products.objects.filter(
+        variants__inventory__warehouse_id=warehouse_id,
+        variants__inventory__quantity__gt=0
+    ).distinct()
 
-class ProductWarehouseFilterView(APIView):
+    context = {
+        'productos': productos,
+        'bodega_seleccionada': warehouse
+    }
+    return render(request, 'products/products.html', context)
 
-    def get(self, request, warehouse_id):
-        products = Products.objects.filter(
-            variants__inventory__warehouse_id=warehouse_id
-        ).distinct()
-
-        if not products.exists():
-            return Response({"detail": "No products found in this warehouse"}, status=404)
-
-        serializer = ProductSerializer(products, many=True)
-        return Response(serializer.data)

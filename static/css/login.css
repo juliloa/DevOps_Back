@@ -1,0 +1,39 @@
+
+@keyframes gradientAnimation {
+    0% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+.bg-gradient {
+    background: linear-gradient(45deg, #a3bffa, #3b82f6, #9333ea, #f43f5e);
+    background-size: 400% 400%;
+    animation: gradientAnimation 10s ease infinite;
+}
+
+/* Estilos para la visibilidad de la contraseña */
+#toggle-password:checked ~ .password-field {
+    font-family: sans-serif;
+}
+
+#toggle-password:checked ~ .password-field input {
+    -webkit-text-security: none;
+}
+
+#toggle-password:checked ~ .password-field .toggle-password {
+    visibility: visible;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 36px;
+    cursor: pointer;
+    visibility: hidden;
+}

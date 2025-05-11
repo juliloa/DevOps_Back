@@ -1,4 +1,3 @@
-
 from django.contrib.auth.backends import BaseBackend
 from django.contrib.auth.hashers import check_password
 from dbmodels.models.users import Users
@@ -12,11 +11,6 @@ class CustomAuthBackend(BaseBackend):
             if check_password(password, user.password):
                 user.last_login = timezone.now()
                 user.save()
-
-                # Simular los atributos que Django espera para login()
-                user.is_authenticated = True
-                user.is_active = True
-                user.is_anonymous = False
                 user.is_staff = getattr(user, 'is_staff', False)
                 user.get_username = lambda: user.email  
 

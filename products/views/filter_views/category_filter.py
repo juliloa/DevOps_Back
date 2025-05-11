@@ -1,15 +1,13 @@
-from django.views.generic import ListView
-from dbmodels.models import Products
-from django.http import Http404
+from django.shortcuts import render, get_object_or_404
+from dbmodels.models import Products, Categories
 
-class ProductCategoryFilterView(ListView):
-    model = Products
-    template_name = 'products/category_filter.html'  
-    context_object_name = 'productos'
-    
-    def get_queryset(self):
-        category_id = self.kwargs['category_id'] 
-        productos = Products.objects.filter(category_id=category_id)
-        if not productos:
-            raise Http404("No products found for this category")
-        return productos
+def product_category_filter_view(request, category_id):
+    categoria = get_object_or_404(Categories, pk=category_id)
+
+    productos = Products.objects.filter(category_id=category_id)
+
+    context = {
+        'productos': productos,
+        'categoria_seleccionada': categoria
+    }
+    return render(request, 'products/products.html', context)

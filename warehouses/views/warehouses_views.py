@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from dbmodels.models import Warehouses, ProductVariants, Inventory
+from dbmodels.models import Warehouses, Inventory
 from warehouses.serializers import WarehouseSerializer, SimpleWarehouseSerializer
 
 class WarehouseListView(APIView):
@@ -32,3 +32,9 @@ class WarehouseByProductView(APIView):
             'message': 'todo correcto',
             'data': serializer.data
         }, status=status.HTTP_200_OK)
+
+class WarehouseCoordinatesOnlyView(APIView):
+    def get(self, request):
+        warehouses = Warehouses.objects.all()
+        serializer = SimpleWarehouseSerializer(warehouses, many=True)
+        return Response(serializer.data)

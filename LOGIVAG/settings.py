@@ -63,16 +63,19 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 
-
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication', 
     ],
 }
+
+AUTH_USER_MODEL = 'dbmodels.Users'
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True, 
+    'BLACKLIST_AFTER_ROTATION': True, 
     'AUTH_HEADER_TYPES': ('Bearer',),
     'USER_ID_FIELD': 'id_card',     
     'USER_ID_CLAIM': 'id_card',     
@@ -84,17 +87,19 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'login.middleware.jwt_auth.JWTMiddleware',  
+    'login.middleware.RestrictAccessMiddleware.RestrictAccessMiddleware', 
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware', 
-    
 ]
+
 
 ROOT_URLCONF = 'LOGIVAG.urls'
 
 TEMPLATES = [
     {
-        'DIRS': [BASE_DIR / 'templates'],
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [BASE_DIR / 'templates',], 
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -106,6 +111,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'LOGIVAG.wsgi.application'
 
@@ -155,8 +161,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+LOGIN_REDIRECT_URL = '/products/'  
