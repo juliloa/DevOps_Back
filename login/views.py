@@ -15,6 +15,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from dbmodels.models import Users, Roles, Warehouses
+from   LOGIVAG import settings
 import logging
 
 @require_GET
@@ -132,7 +133,8 @@ def password_reset_submit_view(request):
             token = default_token_generator.make_token(user)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             domain = get_current_site(request).domain
-            link = f'http://{domain}/reset/{uid}/{token}/'
+            protocol = 'https' if not settings.DEBUG else 'http'
+            link = f'{protocol}://{domain}/reset/{uid}/{token}/'
 
             subject = "Restablecimiento de Contraseña"
             message = render_to_string('password_reset_email.html', {'link': link, 'user': user})
