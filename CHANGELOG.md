@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/juliloa/DevOps_Back/compare/v2.1.1...v2.2.0) (2025-05-11)
+
+
+### Features
+
+* improve movement UI and enhance JWT middleware ([#22](https://github.com/juliloa/DevOps_Back/issues/22)) ([69fb07b](https://github.com/juliloa/DevOps_Back/commit/69fb07b467e91867e6844d414fd251c2f0640369))
+
 ## [2.1.1](https://github.com/juliloa/DevOps_Back/compare/v2.1.0...v2.1.1) (2025-05-02)
 
 
