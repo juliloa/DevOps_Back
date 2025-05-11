@@ -34,6 +34,7 @@ def variant_create(request, product_id):
         'warehouses': warehouses
     })
 
+@require_POST
 def variant_create_post(request, product_id):
     product = get_object_or_404(Products, pk=product_id)
     variant_code = request.POST.get('variant_code')
