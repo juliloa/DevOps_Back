@@ -23,6 +23,7 @@
                 Logivag
             </a>
             <div class="flex items-center space-x-4 ml-auto">
+                <a href="{% url 'user-list' %}" class="hover:bg-gray-700 px-4 py-2 rounded">Usuarios</a>
                 <a href="{% url 'warehouse-map' %}" class="hover:bg-gray-700 px-4 py-2 rounded">Mapa</a>
                 <a href="{% url 'movement-list' %}" class="hover:bg-gray-700 px-4 py-2 rounded">Movimientos</a>
                     <form method="POST" action="{% url 'logout' %}">

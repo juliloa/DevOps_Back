@@ -1,25 +1,31 @@
+import re
 from django.shortcuts import redirect
 from django.urls import reverse
 
-EXEMPT_URLS = [
-    '/login/',
-    '/login/submit/',
-    '/logout/',
-    '/admin/',
+EXCLUDED_PATHS = [
+    r'^/login/?$',
+    r'^/login/submit/?$',
+    r'^/logout/?$',
+    r'^/admin/.*$',
+    r'^/password_reset/?$',
+    r'^/password_reset/submit/?$',
+    r'^/reset/.+/.+/?$',
 ]
+
+def is_excluded_path(path):
+    return any(re.match(pattern, path) for pattern in EXCLUDED_PATHS)
 
 class RestrictAccessMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
-        path = request.path
-
-        if any(path.startswith(url) for url in EXEMPT_URLS):
+        if is_excluded_path(request.path):
             return self.get_response(request)
 
         access_token = request.COOKIES.get('access_token')
         if not access_token:
+            print(f"[RestrictAccessMiddleware] No token, redirigiendo desde {request.path}")
             return redirect(reverse('login'))
 
         return self.get_response(request)
