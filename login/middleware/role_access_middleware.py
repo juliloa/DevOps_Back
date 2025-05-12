@@ -44,8 +44,7 @@ class RoleAccessMiddleware:
         user_role = user.role.name
 
         for pattern, allowed_roles in RESTRICTED_PATTERNS:
-            if re.match(pattern, path):
-                if user_role not in allowed_roles:
-                    return HttpResponseForbidden("No tienes permiso para acceder a esta página.")
+            if re.match(pattern, path) and user_role not in allowed_roles:
+                return HttpResponseForbidden("No tienes permiso para acceder a esta página.")
 
         return self.get_response(request)
