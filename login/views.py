@@ -2,20 +2,19 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_GET, require_POST
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
-from django.utils.http import urlsafe_base64_encode
+from django.views.decorators.cache import never_cache
 from django.utils.encoding import force_bytes, force_str
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.http import HttpResponse
 from django.template.loader import render_to_string
-from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.tokens import default_token_generator
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from dbmodels.models import Users, Roles, Warehouses
-from   LOGIVAG import settings
+from LOGIVAG import settings
 import logging
 
 @require_GET
@@ -85,6 +84,7 @@ def login_form_view(request):
 
 logger = logging.getLogger(__name__)
 
+@never_cache
 @require_POST
 def login_submit_view(request):
     email = request.POST.get('email')

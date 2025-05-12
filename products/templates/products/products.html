@@ -83,7 +83,9 @@
                         {% else %}
                             <h1 class="text-3xl font-semibold">Catálogo de Productos</h1>
                         {% endif %}
+            {% if request.user.role.name|lower == "administrador" %}
             <a href="{% url 'product-create' %}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">+ Agregar producto</a>
+            {% endif %}
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -102,6 +104,7 @@
                         <a href="{% url 'product-detail' producto.id %}" class="text-blue-600 font-semibold hover:underline">
                             Ver producto
                         </a>
+                        {% if request.user.role.name|lower == "administrador" %}
                         <div class="mt-2 flex gap-3">
                             <a href="{% url 'product-edit' producto.id %}" class="text-yellow-600 hover:underline">Editar</a>
                             <form action="{% url 'product-delete' producto.id %}" method="post" onsubmit="return confirm('¿Eliminar este producto?')">
@@ -109,6 +112,7 @@
                                 <button type="submit" class="text-red-600 hover:underline">Eliminar</button>
                             </form>
                         </div>
+                        {% endif %}
                     </div>
                 </div>
             {% endfor %}

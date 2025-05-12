@@ -35,6 +35,7 @@
                     <td class="px-4 py-3">{{ movement.status }}</td>
                     <td class="px-4 py-3">
                         {% if movement.status == 'Pending' %}
+                            {% if request.user.role.name|lower == "administrador" %}
                             <div class="flex gap-2">
                                 <form method="post" action="{% url 'movement-confirm' movement.id %}">
                                     {% csrf_token %}
@@ -47,8 +48,8 @@
                                     <button type="submit" class="bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400 text-sm">
                                         Cancelar
                                     </button>
-                                </form>
                             </div>
+                            {% endif %}
                         {% else %}
                             <span class="text-gray-400">Sin acciones</span>
                         {% endif %}
