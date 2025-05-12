@@ -91,6 +91,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'login.middleware.jwt_auth.JWTMiddleware',  
     'login.middleware.RestrictAccessMiddleware.RestrictAccessMiddleware', 
+    'login.middleware.role_access_middleware.RoleAccessMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware', 
 ]

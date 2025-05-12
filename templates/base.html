@@ -23,9 +23,13 @@
                 Logivag
             </a>
             <div class="flex items-center space-x-4 ml-auto">
+                {% if request.user.role.name|lower == "administrador" %}
                 <a href="{% url 'user-list' %}" class="hover:bg-gray-700 px-4 py-2 rounded">Usuarios</a>
+                {% endif %}
                 <a href="{% url 'warehouse-map' %}" class="hover:bg-gray-700 px-4 py-2 rounded">Mapa</a>
+                {% if request.user.role.name|lower == "administrador" or request.user.role.name|lower == "operativo" %}
                 <a href="{% url 'movement-list' %}" class="hover:bg-gray-700 px-4 py-2 rounded">Movimientos</a>
+                {% endif %}
                     <form method="POST" action="{% url 'logout' %}">
                         {% csrf_token %}
                         <button type="submit">Cerrar sesión</button>
