@@ -4,8 +4,10 @@ from django.urls import reverse
 from django.test import Client
 from dbmodels.models import Users
 
-@pytest.mark.django_db
+INVALID_EMAIL = 'wrong@example.com'
+INVALID_PASS = 'wrongpass'  
 
+@pytest.mark.django_db
 class TestLoginViews:
 
     def setup_method(self):
@@ -22,7 +24,10 @@ class TestLoginViews:
 
     def test_login_submit_view_invalid(self):
         # Intentar login con datos vacíos o inválidos
-        response = self.client.post(reverse('login_submit'), {'email': 'wrong@example.com', 'password': 'wrongpass'})
+        response = self.client.post(
+            reverse('login_submit'),
+            {'email': INVALID_EMAIL, 'password': INVALID_PASS}
+        )
         assert response.status_code == 200
         assert 'Credenciales inválidas' in response.content.decode('utf-8')
 
@@ -38,7 +43,10 @@ class TestLoginViews:
         user.set_password('testpassword')
         user.save()
 
-        response = self.client.post(reverse('login_submit'), {'email': 'test@example.com', 'password': 'testpassword'})
+        response = self.client.post(
+            reverse('login_submit'),
+            {'email': 'test@example.com', 'password': 'testpassword'}
+        )
         assert response.status_code == 302  # Redirecciona al /products/
         assert 'access_token' in response.cookies
         assert 'refresh_token' in response.cookies
