@@ -10,10 +10,11 @@ RESTRICTED_PATTERNS = [
 
     # Movimientos
     (r'^/movements/$', ['Administrador', 'Operativo']),
-    (r'^/movements/movements/create/', ['Administrador', 'Operativo']),
-    (r'^/movements/confirm/\d+/', ['Administrador']),
-    (r'^/movements/cancel/\d+/', ['Administrador']),
-    (r'^/api/available-warehouses/', ['Administrador', 'Operativo']),
+    (r'^/movements/create/$', ['Administrador', 'Operativo']),
+    (r'^/movements/create/submit/$', ['Administrador', 'Operativo']),
+    (r'^/movements/confirm/\d+/submit/$', ['Administrador']),
+    (r'^/movements/cancel/\d+/submit/$', ['Administrador']),
+    (r'^/movements/api/available-warehouses/$', ['Administrador', 'Operativo']),
 
     # Productos
     (r'^/products/create/$', ['Administrador']),

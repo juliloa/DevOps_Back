@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+{% load static %}
+
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -9,6 +11,7 @@
             window.history.back();
         }
     </script>
+    <link rel="icon" href="{% static 'img/favicon.ico' %}">
     <link rel="stylesheet" href="https://unpkg.com/tailwindcss@%5E2/dist/tailwind.min.css" integrity="sha384-HtMZLkYo+pR5/u7zCzXxMJP6QoNnQJt1qkHM0EaOPvGDIzaVZbmYr/TlvUZ/sKAg" crossorigin="anonymous">
 </head>
 <body class="flex flex-col min-h-screen bg-gray-100 text-gray-900">

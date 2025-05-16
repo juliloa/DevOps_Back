@@ -1,16 +1,33 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse, HttpResponseNotAllowed
+from django.http import JsonResponse
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 from django.contrib import messages
 from django.db import transaction
 from django.views.decorators.http import require_GET, require_POST
-
+from django.conf import settings
+from django.urls import reverse
 from dbmodels.models import Movements, Inventory
 from .MovementForm import MovementForm
 
-# Define constant for template paths
+# Constantes de rutas
 MOVEMENT_FORM_TEMPLATE = 'movements/movement_form.html'
 MOVEMENT_LIST_TEMPLATE = 'movements/movement_list.html'
+ADMIN_EMAIL = 'juliana.loaiza14@gmail.com'
 
+# ------------------- Función general para enviar correos -------------------
+def enviar_correo(destinatario, asunto, plantilla, contexto):
+    cuerpo = render_to_string(plantilla, contexto)
+    send_mail(
+        subject=asunto,
+        message='',
+        html_message=cuerpo,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[destinatario],
+        fail_silently=False
+    )
+
+# ------------------- API de bodegas con stock -------------------
 @require_GET
 def available_warehouses_api(request):
     variant_id = request.GET.get("variant_id")
@@ -22,21 +39,19 @@ def available_warehouses_api(request):
     } for inv in inventories]
     return JsonResponse(data, safe=False)
 
-
+# ------------------- Vista de listado de movimientos -------------------
 @require_GET
 def movement_list_view(request):
     movements = Movements.objects.all()
     return render(request, MOVEMENT_LIST_TEMPLATE, {'movements': movements})
 
-
+# ------------------- Crear movimiento: GET -------------------
 @require_GET
 def movement_create_get_view(request):
     form = MovementForm()
     return render(request, MOVEMENT_FORM_TEMPLATE, {'form': form})
 
-
-from django.core.exceptions import ValidationError
-
+# ------------------- Crear movimiento: POST -------------------
 @require_POST
 @transaction.atomic
 def movement_create_post_view(request):
@@ -45,7 +60,6 @@ def movement_create_post_view(request):
         movement = form.save(commit=False)
         movement.user = request.user
 
-        # Validar stock disponible antes de guardar
         inv = Inventory.objects.select_for_update().filter(
             variant=movement.variant,
             warehouse=movement.source_warehouse
@@ -55,14 +69,35 @@ def movement_create_post_view(request):
             messages.error(request, "Stock insuficiente en la bodega de origen.")
             return render(request, MOVEMENT_FORM_TEMPLATE, {'form': form})
 
+        movement.status = 'Pending'
         movement.save()
-        messages.success(request, "Movimiento creado correctamente.")
+
+        # Correos
+        enviar_correo(
+            request.user.email,
+            "Movimiento creado",
+            "emails/movimiento_creado.html",
+            {"movement": movement, "user": request.user}
+        )
+
+        enviar_correo(
+            ADMIN_EMAIL,
+            "Nuevo movimiento pendiente",
+            "emails/movimiento_pendiente_admin.html",
+            {
+                "movement": movement,
+                "confirm_url": request.build_absolute_uri(reverse("movement-confirm", args=[movement.pk])),
+                "cancel_url": request.build_absolute_uri(reverse("movement-cancel", args=[movement.pk]))
+            }
+        )
+
+        messages.success(request, "Movimiento creado correctamente y notificaciones enviadas.")
         return redirect('movement-list')
     else:
         messages.error(request, "Hubo un error al crear el movimiento.")
         return render(request, MOVEMENT_FORM_TEMPLATE, {'form': form})
 
-
+# ------------------- Confirmar movimiento -------------------
 @require_POST
 @transaction.atomic
 def confirm_movement(request, pk):
@@ -77,15 +112,11 @@ def confirm_movement(request, pk):
         warehouse=movement.source_warehouse
     ).first()
 
-    if not inv_source:
-        messages.error(request, "No existe inventario registrado para esta variante en la bodega origen.")
+    if not inv_source or inv_source.quantity < movement.quantity:
+        messages.error(request, "Stock insuficiente o no registrado en la bodega de origen.")
         return redirect('movement-list')
 
-    if inv_source.quantity < movement.quantity:
-        messages.error(request, "Stock insuficiente para confirmar el movimiento.")
-        return redirect('movement-list')
-
-    # Actualiza stock
+    # Actualizar stock
     inv_source.quantity -= movement.quantity
     inv_source.save()
 
@@ -97,13 +128,29 @@ def confirm_movement(request, pk):
     inv_dest.quantity += movement.quantity
     inv_dest.save()
 
-    # Cambia estado del movimiento
     movement.status = 'Completed'
     movement.save()
+
+    # Correos
+    enviar_correo(
+        movement.user.email,
+        "Movimiento confirmado",
+        "emails/movimiento_confirmado.html",
+        {"movement": movement}
+    )
+
+    if hasattr(movement.destination_warehouse, 'email') and movement.destination_warehouse.email:
+        enviar_correo(
+            movement.destination_warehouse.email,
+            "Actualización de inventario - Movimiento recibido",
+            "emails/notificacion_bodega.html",
+            {"movement": movement}
+        )
 
     messages.success(request, "Movimiento confirmado correctamente.")
     return redirect('movement-list')
 
+# ------------------- Cancelar movimiento -------------------
 @require_POST
 @transaction.atomic
 def cancel_movement(request, pk):
@@ -116,6 +163,12 @@ def cancel_movement(request, pk):
     movement.status = 'Canceled'
     movement.save()
 
+    enviar_correo(
+        movement.user.email,
+        "Movimiento cancelado",
+        "emails/movimiento_cancelado.html",
+        {"movement": movement}
+    )
+
     messages.success(request, "Movimiento cancelado correctamente.")
     return redirect('movement-list')
-

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Movimiento Cancelado</title>
+</head>
+<body>
+  <h2>Hola {{ movement.user.name }},</h2>
+  <p>Su movimiento de inventario ha sido <strong>cancelado</strong> por el administrador.</p>
+  <ul>
+    <li>Producto: {{ movement.variant.product.name }}</li>
+    <li>Variante: {{ movement.variant.attribute_name }}: {{ movement.variant.attribute_value }}</li>
+    <li>Cantidad: {{ movement.quantity }}</li>
+    <li>Bodega origen: {{ movement.source_warehouse.name }}</li>
+    <li>Bodega destino: {{ movement.destination_warehouse.name }}</li>
+  </ul>
+  <p>Si tiene alguna duda, contacte al administrador.</p>
+</body>
+</html>
