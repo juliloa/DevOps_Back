@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Movimiento Creado</title>
+</head>
+<body>
+  <h2>Hola {{ user.name }},</h2>
+  <p>Se ha creado un nuevo movimiento de inventario con los siguientes detalles:</p>
+  <ul>
+    <li>Producto: {{ movement.variant.product.name }}</li>
+    <li>Variante: {{ movement.variant.attribute_name }}: {{ movement.variant.attribute_value }}</li>
+    <li>Cantidad: {{ movement.quantity }}</li>
+    <li>Bodega origen: {{ movement.source_warehouse.name }}</li>
+    <li>Bodega destino: {{ movement.destination_warehouse.name }}</li>
+  </ul>
+  <p>El movimiento está pendiente de confirmación por el administrador.</p>
+  <p>Gracias por usar nuestro sistema.</p>
+</body>
+</html>

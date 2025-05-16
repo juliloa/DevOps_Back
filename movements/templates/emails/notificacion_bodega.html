@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Actualización de Inventario</title>
+</head>
+<body>
+  <h2>Hola,</h2>
+  <p>Se ha recibido un movimiento confirmado en su bodega con los siguientes datos:</p>
+  <ul>
+    <li>Producto: {{ movement.variant.product.name }}</li>
+    <li>Variante: {{ movement.variant.attribute_name }}: {{ movement.variant.attribute_value }}</li>
+    <li>Cantidad recibida: {{ movement.quantity }}</li>
+    <li>Bodega origen: {{ movement.source_warehouse.name }}</li>
+    <li>Bodega destino: {{ movement.destination_warehouse.name }}</li>
+
+    </ul> <p>Por favor verifique el inventario.
+        
+    </p> 
+</body> 
+</html> 

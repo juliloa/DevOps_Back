@@ -37,24 +37,26 @@
                         {% if movement.status == 'Pending' %}
                             {% if request.user.role.name|lower == "administrador" %}
                             <div class="flex gap-2">
-                                <form method="post" action="{% url 'movement-confirm' movement.id %}">
+                                <form method="post" action="{% url 'movement-confirm-submit' movement.id %}" style="display:inline;">
                                     {% csrf_token %}
-                                    <button type="submit" class="bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400 text-sm">
+                                    <button type="submit" class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 text-sm">
                                         Confirmar
                                     </button>
                                 </form>
-                                <form method="post" action="{% url 'movement-cancel' movement.id %}">
+                                <form method="post" action="{% url 'movement-cancel-submit' movement.id %}" style="display:inline;">
                                     {% csrf_token %}
-                                    <button type="submit" class="bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400 text-sm">
+                                    <button type="submit" class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 text-sm">
                                         Cancelar
                                     </button>
+                                </form>
                             </div>
+                            {% else %}
+                                <span class="text-gray-400 italic">Pendiente de aprobación</span>
                             {% endif %}
                         {% else %}
                             <span class="text-gray-400">Sin acciones</span>
                         {% endif %}
                     </td>
-
                 </tr>
             {% empty %}
                 <tr>

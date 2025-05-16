@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Nuevo Movimiento Pendiente</title>
+</head>
+<body>
+  <h2>Administrador,</h2>
+  <p>Se ha creado un nuevo movimiento pendiente que requiere su aprobación:</p>
+  <ul>
+    <li>Producto: {{ movement.variant.product.name }}</li>
+    <li>Variante: {{ movement.variant.attribute_name }}: {{ movement.variant.attribute_value }}</li>
+    <li>Cantidad: {{ movement.quantity }}</li>
+    <li>Bodega origen: {{ movement.source_warehouse.name }}</li>
+    <li>Bodega destino: {{ movement.destination_warehouse.name }}</li>
+  </ul>
+  <p>Puede confirmar o cancelar este movimiento desde los siguientes enlaces:</p>
+  <p><a href="{{ confirm_url }}">Confirmar movimiento</a></p>
+  <p><a href="{{ cancel_url }}">Cancelar movimiento</a></p>
+</body>
+</html>

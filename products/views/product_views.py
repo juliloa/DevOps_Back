@@ -8,7 +8,25 @@ from django.utils.timezone import now
 @never_cache  
 def catalogo_view(request):
     productos = Products.objects.all()
-    return render(request, 'products/products.html', {'productos': productos})
+
+    # Simulación de atributos y sus valores, ajústalo a tu caso
+    atributos_values = {
+        'color': ['rojo', 'azul', 'verde'],
+        'talla': ['S', 'M', 'L', 'XL'],
+        'marca': ['Nike', 'Adidas', 'Puma'],
+    }
+
+    # Obtener valores seleccionados de request.GET (listas)
+    atributos_seleccionados = {}
+    for atributo in atributos_values.keys():
+        atributos_seleccionados[atributo] = request.GET.getlist(atributo)
+
+    contexto = {
+        'productos': productos,
+        'atributos_values': atributos_values,
+        'atributos_seleccionados': atributos_seleccionados,
+    }
+    return render(request, 'products/products.html', contexto)
 
 @require_GET
 def product_create(request):

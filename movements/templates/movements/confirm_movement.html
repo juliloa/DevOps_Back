@@ -1,0 +1,12 @@
+<h2>¿Confirmar Movimiento?</h2>
+<p>Producto: {{ movement.variant.product.name }}</p>
+<p>Variante: {{ movement.variant.attribute_name }} - {{ movement.variant.attribute_value }}</p>
+<p>Cantidad: {{ movement.quantity }}</p>
+<p>Origen: {{ movement.source_warehouse.name }}</p>
+<p>Destino: {{ movement.destination_warehouse.name }}</p>
+
+<form method="post" action="{% url 'movement-confirm-submit' movement.pk %}">
+  {% csrf_token %}
+  <button type="submit">Confirmar</button>
+  <a href="{% url 'movement-list' %}">Cancelar</a>
+</form>
