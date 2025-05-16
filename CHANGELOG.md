@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.4.0](https://github.com/juliloa/DevOps_Back/compare/v2.3.0...v2.4.0) (2025-05-16)
+
+
+### Features
+
+* add email notifications for movements and fix warehouse map filters ([#28](https://github.com/juliloa/DevOps_Back/issues/28)) ([c5d1d05](https://github.com/juliloa/DevOps_Back/commit/c5d1d0541fe53bcb0c13e1291cd3e3addcea16c3))
+* Implement role-based access control for protected views ([#26](https://github.com/juliloa/DevOps_Back/issues/26)) ([eaa5e74](https://github.com/juliloa/DevOps_Back/commit/eaa5e7446f2ed21265c67ab942adbe26934acf54))
+
 ## [2.3.0](https://github.com/juliloa/DevOps_Back/compare/v2.2.0...v2.3.0) (2025-05-11)
 
 
