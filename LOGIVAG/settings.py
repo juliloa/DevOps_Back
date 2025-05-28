@@ -31,7 +31,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'insecure-dev-secret-key-only-for-local')
+
+if not SECRET_KEY or (SECRET_KEY == 'insecure-dev-secret-key-only-for-local' and not DEBUG):
+    raise Exception(" SECRET_KEY inválida o insegura usada en producción. Configura correctamente la variable de entorno.")
+
 
 DEBUG = 'RENDER' not in os.environ
 
