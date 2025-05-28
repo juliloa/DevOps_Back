@@ -12,13 +12,16 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 LOGIN_URL = '/accounts/login/' 
 LOGIN_REDIRECT_URL = '/products/' 
 
-
 from pathlib import Path
 import os
 import dj_database_url
 from dotenv import load_dotenv
 from datetime import timedelta
+from urllib.parse import urlparse
+
 load_dotenv()
+
+tmpPostgres = urlparse(os.getenv("DATABASE_URL"))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,19 +31,25 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 
-SECRET_KEY = os.getenv("SECRET_KEY")
-DEBUG = os.getenv("DEBUG", "False").lower() == "true"  
+SECRET_KEY = os.environ.get('SECRET KEY')
+
+DEBUG = 'RENDER' not in os.environ
+
 SECURE_SSL_REDIRECT = not DEBUG
 
 ALLOWED_HOSTS = ['*']
 
+RENDER_EXTERNAL_HOSTNAME=os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.getenv("EMAIL_HOST")
-EMAIL_PORT = int(os.getenv("EMAIL_PORT"))
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS") == 'True'
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_HOST = os.environ.get("EMAIL_HOST",'smtp.gmail.com')
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT",587))
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS",'True') == 'True'
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
 
 # Application definition
 
@@ -85,6 +94,7 @@ SIMPLE_JWT = {
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -123,12 +133,19 @@ WSGI_APPLICATION = 'LOGIVAG.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL'),
-        conn_max_age=600,
-        ssl_require=True
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
+    }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -164,9 +181,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+# Configuración de WhiteNoise (solo en producción)
+if not DEBUG:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
