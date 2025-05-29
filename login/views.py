@@ -17,6 +17,15 @@ from dbmodels.models import Users, Roles, Warehouses
 from LOGIVAG import settings
 import logging
 
+def landing_view(request):
+    return render(request, 'home_pages/landing.html')
+
+def about_view(request):
+    return render(request, 'home_pages/about.html')
+
+def service_view(request):
+    return render(request, 'home_pages/service.html')
+
 @require_GET
 def user_list_view(request):
     users = Users.objects.select_related('role', 'warehouse').all()

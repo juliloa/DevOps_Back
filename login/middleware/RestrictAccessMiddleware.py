@@ -3,6 +3,9 @@ from django.shortcuts import redirect
 from django.urls import reverse
 
 EXCLUDED_PATHS = [
+    r'^/$', 
+    r'^/landing/service/?$',
+    r'^/landing/about/?$',
     r'^/login/?$',
     r'^/login/submit/?$',
     r'^/logout/?$',

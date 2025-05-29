@@ -1,0 +1,32 @@
+{% extends 'home_pages/landing.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Sección sobre nosotros -->
+
+<section class="about_section layout_padding">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="detail-box">
+          <div class="heading_container">
+            <h2>
+              Sobre <span>Nosotros</span>
+            </h2>
+          </div>
+          <p>
+            Somos un equipo enfocado en optimizar la logística y el control de inventario en bodegas mediante tecnología moderna, flexible y confiable. Nuestro sistema permite gestionar productos, movimientos entre sedes, stock en tiempo real y reportes automatizados, adaptándose a las necesidades de cada empresa.
+            Conectamos eficiencia y trazabilidad para que tu operación nunca se detenga.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="img-box">
+          <img src="{% static 'Carint/images/about-img.jpg' %}" alt="">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+  <!-- end about section -->
+{% endblock %}

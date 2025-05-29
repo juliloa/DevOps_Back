@@ -14,7 +14,6 @@ LOGIN_REDIRECT_URL = '/products/'
 
 from pathlib import Path
 import os
-import dj_database_url
 from dotenv import load_dotenv
 from datetime import timedelta
 from urllib.parse import urlparse
@@ -30,14 +29,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
+DEBUG = 'RENDER' not in os.environ
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'insecure-dev-secret-key-only-for-local')
 
 if not SECRET_KEY or (SECRET_KEY == 'insecure-dev-secret-key-only-for-local' and not DEBUG):
     raise Exception(" SECRET_KEY inválida o insegura usada en producción. Configura correctamente la variable de entorno.")
-
-
-DEBUG = 'RENDER' not in os.environ
 
 SECURE_SSL_REDIRECT = not DEBUG
 

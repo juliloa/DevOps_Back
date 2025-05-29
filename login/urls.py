@@ -1,12 +1,16 @@
 
 from django.urls import path
-from .views import root_redirect
 from . import views
 from .views import password_reset_request_view, password_reset_submit_view
 from .views import password_reset_confirm_view, password_reset_confirm_submit_view
+from .views import landing_view,service_view,about_view
 
 urlpatterns = [
-    path('', root_redirect),  
+
+    path('', landing_view, name='landing'), 
+    path('landing/service/', service_view, name='service'), 
+    path('landing/about/', about_view, name='about'), 
+
     path('login/', views.login_form_view, name='login'),  
     path('login/submit/', views.login_submit_view, name='login_submit'),  
     path('logout/', views.logout_view, name='logout'),
