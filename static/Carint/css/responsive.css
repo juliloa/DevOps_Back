@@ -1,6 +1,10 @@
-@media (max-width: 1300px) {}
+@media (max-width: 1300px) {
+  /* TODO: Add responsive styles here */
+}
 
-@media (max-width: 1120px) {}
+@media (max-width: 1120px) {
+  /* TODO: Add styles for <=1120px */
+}
 
 @media (max-width: 992px) {
   .hero_area {
@@ -107,7 +111,10 @@
   }
 }
 
-@media (max-width: 376px) {}
+@media (max-width: 376px) {
+  /* TODO: Add responsive styles for small devices */
+}
+
 
 @media (min-width: 1200px) {
   .container {

@@ -17,12 +17,15 @@ from dbmodels.models import Users, Roles, Warehouses
 from LOGIVAG import settings
 import logging
 
+@require_GET
 def landing_view(request):
     return render(request, 'home_pages/landing.html')
 
+@require_GET
 def about_view(request):
     return render(request, 'home_pages/about.html')
 
+@require_GET
 def service_view(request):
     return render(request, 'home_pages/service.html')
 

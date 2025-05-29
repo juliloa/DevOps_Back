@@ -231,13 +231,11 @@ a:focus {
 
 .custom_nav-container .navbar-toggler {
   outline: none;
-}
-
-.custom_nav-container .navbar-toggler {
   padding: 0;
   width: 37px;
   height: 42px;
   transition: all .3s;
+}
 
   span {
     display: block;
@@ -260,7 +258,6 @@ a:focus {
       background-color: $black;
       top: -10px;
       border-radius: 5px;
-      transition: all .3s;
     }
 
     &::after {
@@ -306,7 +303,7 @@ a:focus {
       transform: none;
     }
   }
-}
+
 
 
 /*end header section*/
@@ -455,8 +452,6 @@ a:focus {
         text-transform: uppercase;
       }
 
-      p {}
-
       a {
         color: $primary2;
         font-weight: 600;
@@ -466,8 +461,6 @@ a:focus {
         }
       }
     }
-
-    &:hover {}
   }
 }
 
