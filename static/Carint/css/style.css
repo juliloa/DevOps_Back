@@ -222,9 +222,8 @@ a:focus {
   transition: all 0.3s;
   position: relative;
   border-radius: 5px;
-  -webkit-transition: all .3s;
-  transition: all .3s;
 }
+
 
 .custom_nav-container .navbar-toggler span::before, .custom_nav-container .navbar-toggler span::after {
   content: "";
@@ -783,7 +782,6 @@ a:focus {
   border-radius: 5px;
   -webkit-transition: all .3s;
   transition: all .3s;
-  border: none;
 }
 
 .contact_section .form_container button:hover {

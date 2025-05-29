@@ -15,6 +15,5 @@
         if (!regex.test(pwd1)) {
             event.preventDefault();
             alert('La contraseña debe tener mínimo 8 caracteres, al menos una letra mayúscula, un número y un carácter especial.');
-            return;
         }
     });
