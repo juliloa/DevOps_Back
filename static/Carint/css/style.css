@@ -232,8 +232,6 @@ a:focus {
   background-color: #000000;
   top: -10px;
   border-radius: 5px;
-  -webkit-transition: all .3s;
-  transition: all .3s;
 }
 
 .custom_nav-container .navbar-toggler span::after {
