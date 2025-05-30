@@ -13,15 +13,41 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-from dbmodels.models import Users, Roles, Warehouses
+from dbmodels.models import Users, Roles, Warehouses,Logs
 from LOGIVAG import settings
 import logging
+from django.views.generic import ListView
+
+class LogsListView(ListView):
+    model = Logs
+    template_name = 'logs/logs_list.html'  
+    context_object_name = 'logs'
+    paginate_by = 10 
+    ordering = ['-date']  
+
+
+@require_GET
+def landing_view(request):
+    return render(request, 'home_pages/landing.html')
+
+@require_GET
+def about_view(request):
+    return render(request, 'home_pages/about.html')
+
+@require_GET
+def service_view(request):
+    return render(request, 'home_pages/service.html')
 
 @require_GET
 def user_list_view(request):
     users = Users.objects.select_related('role', 'warehouse').all()
-    return render(request, 'users/list.html', {'users': users})
-
+    roles = Roles.objects.all()  # Obtener todos los roles
+    warehouses = Warehouses.objects.all()  # Obtener todas las bodegas
+    return render(request, 'users/list.html', {
+        'users': users,
+        'roles': roles,  # Añadir roles al contexto
+        'warehouses': warehouses  # Añadir bodegas al contexto
+    })
 @require_GET
 def user_create_form_view(request):
     roles = Roles.objects.all()
@@ -84,6 +110,15 @@ def login_form_view(request):
 
 logger = logging.getLogger(__name__)
 
+@require_GET
+def home_view(request):
+    # Verifica si el usuario está autenticado
+    if not request.user.is_authenticated:
+        return redirect('login')  # Redirige al login si no está autenticado
+    
+    # Si está autenticado, muestra el base.html
+    return render(request, 'base.html')
+
 @never_cache
 @require_POST
 def login_submit_view(request):
@@ -97,7 +132,7 @@ def login_submit_view(request):
 
         
         refresh = RefreshToken.for_user(user)
-        response = HttpResponseRedirect('/products/')
+        response = HttpResponseRedirect('/home')
 
         
         response.set_cookie('access_token', str(refresh.access_token), httponly=True, secure=True, samesite='Lax')

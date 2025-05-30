@@ -1,5 +1,5 @@
 from django.urls import path
-from products.views.product_views import catalogo_view, product_create,product_create_post, product_delete, product_edit_get,product_edit
+from products.views.product_views import update_inventory_quantity,inventory_list_view,catalogo_view,product_list, product_create,product_create_post, product_delete, product_edit_get,product_edit
 from products.views.filter_views.attribute_filter import product_filter_by_attributes_view
 from products.views.filter_views.category_filter import product_category_filter_view
 from products.views.filter_views.price_filter import product_price_filter_view
@@ -10,12 +10,15 @@ from products.views.product_detail_view import (
     variant_create_post,
     variant_edit_get,
     variant_edit_post,
-    variant_delete
+    variant_delete,
 )
 
 urlpatterns = [
+    path('inventory/', inventory_list_view, name='inventory-list'),  
+    path('inventory/update/', update_inventory_quantity, name='inventory-update'),  
 
     path('', catalogo_view, name='catalogo-view'),
+    path('productos/', product_list, name='product-list'),  
     path('create/', product_create, name='product-create'), 
     path('create/post/', product_create_post, name='product-create-post'), 
     path('<int:pk>/edit/', product_edit_get, name='product-edit'),
@@ -23,7 +26,6 @@ urlpatterns = [
     path('<int:pk>/delete/', product_delete, name='product-delete'),
 
     path('product/<int:pk>/', ProductDetailView.as_view(), name='product-detail'),
-
     # Variantes 
     path('<int:product_id>/variants/create/', variant_create, name='variant-create'),
     path('<int:product_id>/variants/create/post/', variant_create_post, name='variant-create-post'),

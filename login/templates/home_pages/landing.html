@@ -1,0 +1,411 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es" xml:lang="es">
+
+<head>
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <link rel="shortcut icon" href="static 'Carint/images/fevicon.png'" type="">
+
+  <title> Logivag </title>
+
+  <!-- bootstrap core css -->
+  <link rel="stylesheet" type="text/css" href="{% static 'Carint/css/bootstrap.css'%}" />
+
+  <!-- fonts style -->
+ <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" integrity="sha384-IbhXtuiCSdTl60rwBjPjpQpgVOeUo3pP8ECfWT1hS4eu+MBLw0PHSUbLsehIIhP1" crossorigin="anonymous">
+
+  <!--owl slider stylesheet -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" integrity="sha384-kcNNzf7wI8//ZkNUaDd5JwxLoFaBgkj9Z4O4NwtuX9Lkmsz0HoITOxJsGkYxDuyG" crossorigin="anonymous">
+  <!-- font awesome style -->
+  <link href="{%static 'Carint/css/font-awesome.min.css'%}"rel="stylesheet" />
+
+  <!-- Custom styles for this template -->
+  <link href="{%static 'Carint/css/style.css'%}" rel="stylesheet" />
+  <!-- responsive style -->
+  <link href="{%static 'Carint/css/responsive.css'%}" rel="stylesheet" />
+
+</head>
+
+<body>
+
+  <div class="hero_area">
+    <!-- header section strats -->
+    <header class="header_section">
+      <div class="header_top">
+        <div class="container-fluid ">
+          <div class="contact_nav">
+                        <a href="">
+              <i class="fa fa-phone" aria-hidden="true"></i>
+              <span>
+                Call : +57 1234567889
+              </span>
+            </a>
+            <a href="">
+              <i class="fa fa-envelope" aria-hidden="true"></i>
+              <span>
+                Email : logivag@yopmail.com
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="header_bottom">
+        <div class="container-fluid">
+          <nav class="navbar navbar-expand-lg custom_nav-container ">
+            <a class="navbar-brand" href="{% url 'landing' %}">
+              <span>
+                Logivag
+              </span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class=""> </span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav  ">
+                <li class="nav-item active">
+                  <a class="nav-link" href="{% url 'landing' %}"> Inicio <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'service'%}">Servicios</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'about'%}"> Sobre Nosotros</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'login' %}"> <i class="fa fa-user" aria-hidden="true"></i> Iniciar Sesion</a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+        </div>
+      </div>
+    
+    </header>
+    <!-- end header section -->
+    <!-- slider section -->
+    <section class="slider_section ">
+      <div class="slider_bg_box">
+        <img src="{%static 'Carint/images/slider-bg.jpg'%}" alt="">
+      </div>
+      <div id="customCarousel1" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <div class="container ">
+              <div class="row">
+                <div class="col-md-7 ">
+                  <div class="detail-box">
+                    <h1>
+                      Ofrecemos el mejor <br>
+                      servicio de transporte y logística
+                    </h1>
+                    <p>
+                      Gestionamos el inventario y traslado de tus productos entre bodegas de forma segura, eficiente y en tiempo real, para que tu operación no se detenga.                    </p>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <div class="container ">
+              <div class="row">
+                <div class="col-md-7 ">
+                  <div class="detail-box">
+                    <h1>
+                      Soluciones confiables <br>
+                      para tu cadena de suministro
+                    </h1>
+                    <p>
+                      Optimiza el control de tus productos en bodegas y movimientos entre ubicaciones con nuestra plataforma integral, diseñada para facilitar tu logística diaria.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <div class="container ">
+              <div class="row">
+                <div class="col-md-7 ">
+                  <div class="detail-box">
+                    <h1>
+                      Gestiona tu inventario <br>
+                      de forma simple y eficiente
+                    </h1>
+                    <p>
+                      Lleva el control total de tus productos, monitorea el stock en tiempo real y automatiza movimientos entre bodegas desde una sola plataforma.                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ol class="carousel-indicators">
+          <li data-target="#customCarousel1" data-slide-to="0" class="active"></li>
+          <li data-target="#customCarousel1" data-slide-to="1"></li>
+          <li data-target="#customCarousel1" data-slide-to="2"></li>
+        </ol>
+      </div>
+    </section>
+    <!-- end slider section -->
+  </div>
+{% block content %}
+
+  <!-- service section -->
+<!-- Sección de servicios -->
+
+<section class="service_section layout_padding">
+  <div class="service_container">
+    <div class="container">
+      <div class="heading_container">
+        <h2>
+          Funcionalidades <span>Destacadas</span>
+        </h2>
+        <p>
+          Nuestro sistema ha sido diseñado para facilitar la operación diaria de tu inventario, garantizar trazabilidad y brindar información clara y útil en todo momento.
+        </p>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="box">
+            <div class="img-box">
+              <img src="{% static 'Carint/images/s1.png' %}" alt="">
+            </div>
+            <div class="detail-box">
+              <h5>
+                Visibilidad Total
+              </h5>
+              <p>
+                Consulta la ubicación exacta y el stock de cada producto en tiempo real, filtrando por categoría, bodega y atributos.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="box">
+            <div class="img-box">
+              <img src="{% static 'Carint/images/s2.png' %}" alt="">
+            </div>
+            <div class="detail-box">
+              <h5>
+                Optimización de Recursos
+              </h5>
+              <p>
+                Evita sobrestock o faltantes con alertas inteligentes y movimientos controlados entre bodegas según disponibilidad.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="box">
+            <div class="img-box">
+              <img src="{% static 'Carint/images/s3.png' %}" alt="">
+            </div>
+            <div class="detail-box">
+              <h5>
+                Seguridad y Control
+              </h5>
+              <p>
+                Todas las acciones quedan registradas con trazabilidad completa, gracias al sistema de logs y auditoría integrado.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="box">
+            <div class="img-box">
+              <img src="{% static 'Carint/images/s4.png' %}" alt="">
+            </div>
+            <div class="detail-box">
+              <h5>
+                Acceso Personalizado
+              </h5>
+              <p>
+                Cada usuario accede solo a lo que necesita, gracias a una estructura de roles personalizable que mejora la seguridad del sistema.
+              </p>
+              <a href="">
+                Ver más
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+  <!-- track section -->
+
+ <!-- Sección de seguimiento -->
+
+<section class="track_section layout_padding">
+  <div class="track_bg_box">
+    <img src="{% static 'Carint/images/track-bg.jpg' %}" alt="">
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="heading_container">
+          <h2>
+            Rastrea tu movimiento
+          </h2>
+        </div>
+        <p>
+          Consulta el estado y ubicación actual de un producto que ha sido trasladado entre bodegas. Con nuestro sistema, puedes tener control total sobre los movimientos, usuarios responsables y fechas exactas.
+          Ingresa el código de seguimiento que se generó al realizar el movimiento y obtén la información al instante.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- end track section -->
+
+  <!-- client section -->
+<section class="client_section layout_padding">
+  <div class="container">
+    <div class="heading_container">
+      <h2>
+        Lo que dicen nuestros <span>clientes</span>
+      </h2>
+    </div>
+    <div class="client_container">
+      <div class="carousel-wrap">
+        <div class="owl-carousel">
+          <div class="item">
+            <div class="box">
+              <div class="detail-box">
+                <p>
+                  Desde que implementamos Logivag, hemos podido controlar nuestro inventario entre bodegas sin errores y con total trazabilidad. Nos ha ahorrado tiempo y dinero.
+                </p>
+              </div>
+              <div class="client_id">
+                <div class="img-box">
+                  <img src="{% static 'Carint/images/client-1.png' %}" alt="" class="img-1">
+                </div>
+                <div class="name">
+                  <h6>
+                    Laura Gómez
+                  </h6>
+                  <p>
+                    Gerente de Logística - Ropa Urbana
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="box">
+              <div class="detail-box">
+                <p>
+                  El sistema es intuitivo y permite monitorear el stock en tiempo real. La integración con notificaciones ha sido clave para mantenernos actualizados.
+                </p>
+              </div>
+              <div class="client_id">
+                <div class="img-box">
+                  <img src="{% static 'Carint/images/client-2.png' %}" alt="" class="img-1">
+                </div>
+                <div class="name">
+                  <h6>
+                    Carlos Ruiz
+                  </h6>
+                  <p>
+                    Coordinador de Bodegas - TecnoSur
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="box">
+              <div class="detail-box">
+                <p>
+                  Con Logivag, ahora sabemos exactamente dónde está cada producto y quién realizó cada movimiento. La trazabilidad es excelente.
+                </p>
+              </div>
+              <div class="client_id">
+                <div class="img-box">
+                  <img src="{% static 'Carint/images/client-1.png' %}" alt="" class="img-1">
+                </div>
+                <div class="name">
+                  <h6>
+                    Andrea Torres
+                  </h6>
+                  <p>
+                    Administradora - Almacenes NetWare
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="box">
+              <div class="detail-box">
+                <p>
+                  El control de inventario en tiempo real y los reportes automáticos hacen que Logivag sea una herramienta indispensable en nuestra operación.
+                </p>
+              </div>
+              <div class="client_id">
+                <div class="img-box">
+                  <img src="{% static 'Carint/images/client-2.png' %}" alt="" class="img-1">
+                </div>
+                <div class="name">
+                  <h6>
+                    Felipe Muñoz
+                  </h6>
+                  <p>
+                    Director Operativo - Distribuciones Medellín
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  {% endblock %}
+
+  <!-- footer section -->
+<section class="footer_section bg-gray-100 py-4">
+  <div class="container text-center text-gray-700">
+    <p>
+      &copy; <span id="displayYear"></span> Logivag
+    </p>
+  </div>
+</section>
+  <!-- footer section -->
+
+  <!-- jQery -->
+  <script type="text/javascript" src="{%static 'Carint/js/jquery-3.4.1.min.js'%}"></script>
+  <!-- popper js -->
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <!-- bootstrap js -->
+  <script type="text/javascript" src="{%static 'Carint/js/bootstrap.js'%}"></script>
+  <!-- owl slider -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js" integrity="sha384-l/y5WJTphApmSlx76Ev6k4G3zxu/+19CVvn9OTKI7gs4Yu5Hm8mjpdtdr5oyhnNo" crossorigin="anonymous"></script>
+  <!-- custom js -->
+  <script type="text/javascript" src="{%static 'Carint/js/custom.js'%}"></script>
+  <!-- Google Map -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap" integrity="sha384-XFdMisGgpmmTbQ8+vL7HsXKKeLUr82cFFTJ0Eh8S+sM49mZN4fBT+ZItI5lQgjau" crossorigin="anonymous"></script>
+
+  <!-- End Google Map -->
+
+</body>
+
+</html>

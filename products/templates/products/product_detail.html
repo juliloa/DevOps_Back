@@ -1,66 +1,306 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="p-6 max-w-4xl mx-auto">
-    <!-- Encabezado de Producto -->
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-3xl font-bold text-gray-800">{{ producto.name }}</h1>
+<div class="card">
+    <div class="card-header">
+        <h5>{{ producto.name }}</h5>
     </div>
 
-    <!-- Descripción del Producto -->
-    <p class="text-gray-700 mb-8">{{ producto.description }}</p>
+    <div class="card-block" style="padding: 20px 25px;">
+        <!-- Imagen y descripción -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                {% if producto.image_url %}
+                    <img src="{{ producto.image_url }}" alt="{{ producto.name }}" class="img-fluid rounded" style="max-height: 200px; width: auto;">
+                {% else %}
+                    <div class="text-center py-4 bg-light rounded">
+                        <i class="ti-image" style="font-size: 50px; color: #ccc;"></i>
+                        <p class="text-muted mt-2">Sin imagen</p>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-md-8">
+                <h6 class="sub-title">Descripción</h6>
+                <p class="text-muted">{{ producto.description }}</p>
+                {% if producto.category %}
+                    <div class="mt-3">
+                        <span class="badge badge-pill" style="background-color: #E3F2FD; color: #1976D2; border-radius: 12px;">
+                            <i class="ti-tag mr-1"></i> {{ producto.category.name }}
+                        </span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
 
-    <!-- Crear Variante -->
-    <div class="mb-6 flex justify-between items-center">
-        <h2 class="text-2xl font-semibold text-gray-800">Variantes disponibles</h2>
-        {% if request.user.role.name|lower == "administrador" %}
-        <a href="{% url 'variant-create' producto.id %}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition duration-200">
-            + Crear Variante
-        </a>
-        {% endif %}
-    </div>
-
-    <!-- Lista de Variantes -->
-    <div class="space-y-6">
-        {% for variante in variantes %}
-            <div class="border border-gray-300 p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition duration-300">
-                <!-- Atributos de la Variante -->
-                <div class="mb-4">
-                    <strong class="text-lg text-gray-800">Atributos:</strong>
-                    <ul class="list-disc list-inside mt-2 text-gray-600">
-                        {% for key, value in variante.attributes.items %}
-                            <li><span class="font-semibold">{{ key|capfirst }}:</span> {{ value }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-
-                <!-- Precio -->
-                <p class="text-lg text-gray-800 mb-2"><strong>Precio:</strong> ${{ variante.price }}</p>
-
-                <!-- Stock y Bodega -->
-                <p class="text-lg text-gray-800 mb-4"><strong>Stock:</strong> {{ variante.inventory.quantity|default:"N/A" }}</p>
-                <p class="text-lg text-gray-800 mb-4"><strong>Bodega:</strong> {{ variante.inventory.warehouse.name|default:"N/A" }}</p>
+        <!-- Variantes -->
+        <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="sub-title">Variantes disponibles</h6>
                 {% if request.user.role.name|lower == "administrador" %}
-                <!-- Acciones -->
-                <div class="flex space-x-4">
-                    <!-- Editar -->
-                    <a href="{% url 'variant-edit' variante.id %}" class="text-blue-600 hover:text-blue-700 transition duration-200">
-                        <i class="fas fa-edit mr-2"></i> Editar
-                    </a>
+                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#createVariantModal" 
+                            style="font-size: 14px; border-radius: 20px; padding: 5px 15px;">
+                        <i class="ti-plus"></i> Nueva Variante
+                    </button>
+                {% endif %}
+            </div>
 
-                    <!-- Eliminar -->
-                    <form method="post" action="{% url 'variant-delete' variante.id %}" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta variante?');">
-                        {% csrf_token %}
-                        <button type="submit" class="text-red-600 hover:text-red-700 transition duration-200">
-                            <i class="fas fa-trash-alt mr-2"></i> Eliminar
-                        </button>
-                    </form>
+            {% if variantes %}
+                <div class="row">
+                    {% for variante in variantes %}
+                        <div class="col-md-6 col-xl-4">
+                            <div class="card mb-4" style="border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                                <div class="card-body">
+                                    <h6 class="card-subtitle mb-3 text-muted">Atributos</h6>
+                                    <ul class="list-unstyled">
+                                        {% for key, value in variante.attributes.items %}
+                                            <li class="mb-1">
+                                                <span class="font-weight-bold">{{ key|capfirst }}:</span> 
+                                                <span class="text-muted">{{ value }}</span>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+
+                                    <div class="border-top pt-3 mt-3">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span class="font-weight-bold">Precio:</span>
+                                            <span class="text-muted">${{ variante.price }}</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span class="font-weight-bold">Stock:</span>
+                                            <span class="text-muted">{{ variante.inventory.quantity|default:"N/A" }}</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span class="font-weight-bold">Bodega:</span>
+                                            <span class="text-muted">{{ variante.inventory.warehouse.name|default:"N/A" }}</span>
+                                        </div>
+                                    </div>
+
+                                    {% if request.user.role.name|lower == "administrador" %}
+                                        <div class="d-flex justify-content-end mt-3">
+                                            <button class="btn btn-sm mr-2" data-toggle="modal" data-target="#editVariantModal-{{ variante.id }}" 
+                                                    style="background-color: #E3F2FD; color: #1976D2; border-radius: 15px; border: 1px solid #BBDEFB;">
+                                                <i class="ti-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-sm" data-toggle="modal" data-target="#deleteVariantModal-{{ variante.id }}" 
+                                                    style="background-color: #FFEBEE; color: #D32F2F; border-radius: 15px; border: 1px solid #FFCDD2;">
+                                                <i class="ti-trash"></i>
+                                            </button>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    No hay variantes para este producto.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Modal Crear Variante -->
+{% if request.user.role.name|lower == "administrador" %}
+<div class="modal fade" id="createVariantModal" tabindex="-1" role="dialog" aria-labelledby="createVariantModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form id="createVariantForm" method="POST" action="{% url 'variant-create' producto.id %}" class="modal-content" onsubmit="return processAttributes(this);">
+        {% csrf_token %}
+        <div class="modal-header">
+            <h5 class="modal-title" id="createVariantModalLabel">Nueva Variante</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="variantCodeCreate">Código Variante</label>
+                <input type="text" class="form-control" id="variantCodeCreate" name="variant_code" required>
+            </div>
+
+            <label>Atributos</label>
+            <div id="attributesContainerCreate" class="mb-3">
+                <div class="form-row mb-2 attribute-row">
+                    <div class="col">
+                        <input type="text" class="form-control attribute-key" placeholder="Nombre (ej: color)" required>
+                    </div>
+                    <div class="col">
+                        <input type="text" class="form-control attribute-value" placeholder="Valor (ej: azul)" required>
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-danger btn-sm btn-remove-attribute" onclick="removeAttributeRow(this)">×</button>
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm mb-3" onclick="addAttributeRow('attributesContainerCreate')">Agregar atributo</button>
+
+            <input type="hidden" name="attributes" id="attributesInputCreate" required>
+
+            <div class="form-group">
+                <label for="variantPriceCreate">Precio</label>
+                <input type="number" step="0.01" class="form-control" id="variantPriceCreate" name="price" required>
+            </div>
+            <div class="form-group">
+                <label for="variantWarehouseCreate">Bodega</label>
+                <select class="form-control" id="variantWarehouseCreate" name="warehouse" required>
+                    <option value="" selected disabled>Selecciona una bodega</option>
+                    {% for warehouse in warehouses %}
+                        <option value="{{ warehouse.id }}">{{ warehouse.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="variantQuantityCreate">Cantidad</label>
+                <input type="number" class="form-control" id="variantQuantityCreate" name="quantity" min="0" required>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" style="border-radius: 20px; padding: 5px 20px;">
+                <i class="ti-save"></i> Crear
+            </button>
+        </div>
+    </form>
+  </div>
+</div>
+{% endif %}
+
+<!-- Modal Editar Variante -->
+{% for variante in variantes %}
+<div class="modal fade" id="editVariantModal-{{ variante.id }}" tabindex="-1" role="dialog" aria-labelledby="editVariantModalLabel-{{ variante.id }}" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form id="editVariantForm-{{ variante.id }}" method="POST" action="{% url 'variant-edit' variante.id %}" class="modal-content" onsubmit="return processAttributes(this);">
+        {% csrf_token %}
+        <div class="modal-header">
+            <h5 class="modal-title" id="editVariantModalLabel-{{ variante.id }}">Editar Variante</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="variantCodeEdit{{ variante.id }}">Código Variante</label>
+                <input type="text" class="form-control" id="variantCodeEdit{{ variante.id }}" name="variant_code" required value="{{ variante.variant_code }}">
+            </div>
+
+            <label>Atributos</label>
+            <div id="attributesContainerEdit{{ variante.id }}" class="mb-3">
+                {% for key, value in variante.attributes.items %}
+                <div class="form-row mb-2 attribute-row">
+                    <div class="col">
+                        <input type="text" class="form-control attribute-key" placeholder="Nombre (ej: color)" required value="{{ key }}">
+                    </div>
+                    <div class="col">
+                        <input type="text" class="form-control attribute-value" placeholder="Valor (ej: azul)" required value="{{ value }}">
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-danger btn-sm btn-remove-attribute" onclick="removeAttributeRow(this)">×</button>
+                    </div>
+                </div>
+                {% endfor %}
+                {% if variante.attributes|length == 0 %}
+                <div class="form-row mb-2 attribute-row">
+                    <div class="col">
+                        <input type="text" class="form-control attribute-key" placeholder="Nombre (ej: color)" required>
+                    </div>
+                    <div class="col">
+                        <input type="text" class="form-control attribute-value" placeholder="Valor (ej: azul)" required>
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-danger btn-sm btn-remove-attribute" onclick="removeAttributeRow(this)">×</button>
+                    </div>
                 </div>
                 {% endif %}
             </div>
-        {% empty %}
-            <p class="text-gray-600">No hay variantes para este producto.</p>
-        {% endfor %}
-    </div>
+            <button type="button" class="btn btn-secondary btn-sm mb-3" onclick="addAttributeRow('attributesContainerEdit{{ variante.id }}')">Agregar atributo</button>
+
+            <input type="hidden" name="attributes" id="attributesInputEdit{{ variante.id }}" required>
+
+            <div class="form-group">
+                <label for="variantPriceEdit{{ variante.id }}">Precio</label>
+                <input type="number" step="0.01" class="form-control" id="variantPriceEdit{{ variante.id }}" name="price" required value="{{ variante.price }}">
+            </div>
+            <div class="form-group">
+                <label for="variantWarehouseEdit{{ variante.id }}">Bodega</label>
+                <select class="form-control" id="variantWarehouseEdit{{ variante.id }}" name="warehouse" required>
+                    {% for warehouse in warehouses %}
+                        <option value="{{ warehouse.id }}" {% if variante.inventory.warehouse.id == warehouse.id %}selected{% endif %}>{{ warehouse.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="variantQuantityEdit{{ variante.id }}">Cantidad</label>
+                <input type="number" class="form-control" id="variantQuantityEdit{{ variante.id }}" name="quantity" min="0" required value="{{ variante.inventory.quantity }}">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" style="border-radius: 20px; padding: 5px 20px;">
+                <i class="ti-save"></i> Guardar
+            </button>
+        </div>
+    </form>
+  </div>
 </div>
+{% endfor %}
+
+<script>
+// Agrega una fila de atributo key-value a un contenedor dado
+function addAttributeRow(containerId) {
+    const container = document.getElementById(containerId);
+    const div = document.createElement('div');
+    div.className = 'form-row mb-2 attribute-row';
+    div.innerHTML = `
+        <div class="col">
+            <input type="text" class="form-control attribute-key" placeholder="Nombre (ej: color)" required>
+        </div>
+        <div class="col">
+            <input type="text" class="form-control attribute-value" placeholder="Valor (ej: azul)" required>
+        </div>
+        <div class="col-auto">
+            <button type="button" class="btn btn-danger btn-sm btn-remove-attribute" onclick="removeAttributeRow(this)">×</button>
+        </div>
+    `;
+    container.appendChild(div);
+}
+
+// Remueve la fila del atributo que contiene el botón
+function removeAttributeRow(button) {
+    const row = button.closest('.attribute-row');
+    if (row) {
+        row.remove();
+    }
+}
+
+// Convierte los inputs key-value a JSON y lo guarda en el input hidden antes de enviar el formulario
+function processAttributes(form) {
+    const container = form.querySelector('[id^="attributesContainer"]');
+    const inputHidden = form.querySelector('input[type="hidden"][name="attributes"]');
+    if (!container || !inputHidden) {
+        alert('Error: no se encontró el contenedor o el campo oculto de atributos.');
+        return false;
+    }
+
+    const keys = container.querySelectorAll('.attribute-key');
+    const values = container.querySelectorAll('.attribute-value');
+
+    const attributes = {};
+    for (let i = 0; i < keys.length; i++) {
+        const key = keys[i].value.trim();
+        const value = values[i].value.trim();
+        if (key === '' || value === '') {
+            alert('Todos los atributos deben tener nombre y valor.');
+            return false;
+        }
+        if (key in attributes) {
+            alert('Los nombres de atributos deben ser únicos.');
+            return false;
+        }
+        attributes[key] = value;
+    }
+
+    inputHidden.value = JSON.stringify(attributes);
+    return true;
+}
+</script>
+
 {% endblock %}

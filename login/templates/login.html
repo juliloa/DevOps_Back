@@ -1,52 +1,125 @@
-{%load static%}
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sign In</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Iniciar sesión</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" integrity="sha384-HtMZLkYo+pR5/u7zCzXxMJP6QoNnQJt1qkHM0EaOPvGDIzaVZbmYr/TlvUZ/sKAg" crossorigin="anonymous">
+    <style>
+        .login-container {
+            height: 80vh;
+            max-height: 700px;
+            min-height: 500px;
+        }
+        .image-container {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #ffffff;
+        }
+        .login-image {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+        @media (max-width: 767px) {
+            .login-container {
+                height: auto;
+                min-height: auto;
+            }
+        }
+    </style>
 </head>
-<body class="bg-gradient flex items-center justify-center min-h-screen relative">
 
-    <div class="w-full max-w-sm bg-white p-8 rounded-2xl shadow-lg z-10">
-        <h2 class="text-3xl font-semibold text-center mb-6 text-gray-800">Sign In</h2>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
 
-        <!-- Formulario de login -->
-        <form method="POST" action="{% url 'login_submit' %}">
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden w-full max-w-6xl login-container flex flex-col md:flex-row">
 
-            {% csrf_token %}
-            <div class="mb-4">
-                <label for="email" class="block text-sm font-medium text-gray-700">Correo electrónico</label>
-                <input type="email" name="email" id="email" required
-                    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-indigo-200 focus:outline-none" />
-            </div>
+        <!-- Lado derecho - Imagen (rectangular) -->
+        <div class="hidden md:flex md:w-1/2 image-container">
+            <img src="{% static 'img/1.jpg' %}" alt="Ilustración para la página de inicio de sesión" class="login-image" />
 
-            <div class="mb-4 relative password-field">
-                <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
-                <input type="password" name="password" id="password" required
-                    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-indigo-200 focus:outline-none" />
-            </div>
+        </div>
 
-            {% if error %}
-                <div class="mb-4 text-sm text-red-600 bg-red-100 p-2 rounded">
-                    <p>{{ error }}</p>
-                </div>
-            {% endif %}
-
-            <button type="submit"
-                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg font-semibold transition duration-200">
-                Iniciar sesión
-            </button>
-            <!-- Enlace para recuperar contraseña -->
-            <div class="mt-4 text-center">
-                <a href="{% url 'password_reset' %}" class="text-sm text-indigo-600 hover:text-indigo-800 transition duration-200">
-                    ¿Olvidaste tu contraseña?
+        <!-- Lado izquierdo - Formulario -->
+        <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
+            <div class="max-w-md mx-auto w-full">
+                <a href="{% url 'landing' %}" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium flex items-center">
+                    <span class="text-lg mr-1">←</span> Volver a la página principal
                 </a>
+                <h2 class="text-3xl md:text-4xl font-bold mb-6 text-gray-800 text-center">Iniciar sesión</h2>
+                {% if messages %}
+                {% for message in messages %}
+                    <div
+                    class="
+                        {% if 'error' in message.tags %}
+                        text-red-700 bg-red-100 border border-red-300
+                        {% elif 'success' in message.tags %}
+                        text-green-700 bg-green-100 border border-green-300
+                        {% endif %}
+                        rounded p-3 mb-4
+                    "
+                    >
+                    {{ message }}
+                    </div>
+                {% endfor %}
+                {% endif %}
+
+
+                <form method="POST" action="{% url 'login_submit' %}" class="space-y-6">
+                    {% csrf_token %}
+
+                    <div>
+                        <label for="email" class="block mb-2 text-sm font-medium text-gray-700">Correo electrónico</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            placeholder="ejemplo@email.com"
+                        />
+                    </div>
+
+                    <div>
+                        <label for="password" class="block mb-2 text-sm font-medium text-gray-700">Contraseña</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            placeholder="••••••••"
+                        />
+                    </div>
+
+                    {% if error %}
+                    <div class="text-red-600 text-sm bg-red-100 p-3 rounded-md">
+                        {{ error }}
+                    </div>
+                    {% endif %}
+
+                    <button
+                        type="submit"
+                        class="w-full bg-indigo-600 text-white py-3 rounded-md font-semibold hover:bg-indigo-700 transition focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    >
+                        Entrar
+                    </button>
+
+                    <div class="text-center mt-4">
+                        <a
+                            href="{% url 'password_reset' %}"
+                            class="text-indigo-600 hover:text-indigo-800 text-sm transition"
+                        >
+                            ¿Olvidaste tu contraseña?
+                        </a>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 </body>
 </html>

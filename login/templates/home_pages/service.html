@@ -1,0 +1,85 @@
+{% extends 'home_pages/landing.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Sección de servicios -->
+
+<section class="service_section layout_padding">
+  <div class="service_container">
+    <div class="container">
+      <div class="heading_container">
+        <h2>
+          Nuestros <span>Servicios</span>
+        </h2>
+        <p>
+          En nuestra plataforma de gestión de bodegas, ofrecemos soluciones integrales para controlar y optimizar el manejo de tu inventario en tiempo real.
+        </p>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="box">
+            <div class="img-box">
+              <img src="{% static 'Carint/images/s1.png' %}" alt="">
+            </div>
+            <div class="detail-box">
+              <h5>
+                Control de Inventario
+              </h5>
+              <p>
+                Visualiza y administra tu inventario en múltiples bodegas, con datos actualizados al instante y alertas automáticas de disponibilidad.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="box">
+            <div class="img-box">
+              <img src="{% static 'Carint/images/s2.png' %}" alt="">
+            </div>
+            <div class="detail-box">
+              <h5>
+                Gestión de Movimientos
+              </h5>
+              <p>
+                Registra, controla y rastrea los movimientos de productos entre bodegas, con historial completo y tokens únicos por traslado.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="box">
+            <div class="img-box">
+              <img src="{% static 'Carint/images/s3.png' %}" alt="">
+            </div>
+            <div class="detail-box">
+              <h5>
+                Roles y Permisos
+              </h5>
+              <p>
+                Asigna funciones específicas a cada usuario según su rol (Operativo, Operador, Administrador) para garantizar seguridad y eficiencia.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="box">
+            <div class="img-box">
+              <img src="{% static 'Carint/images/s4.png' %}" alt="">
+            </div>
+            <div class="detail-box">
+              <h5>
+                Reportes y Notificaciones
+              </h5>
+              <p>
+                Genera reportes detallados sobre movimientos e inventario, y recibe notificaciones automáticas por correo o WhatsApp.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

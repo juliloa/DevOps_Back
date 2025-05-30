@@ -20,11 +20,14 @@ class ProductDetailView(View):
                 'inventory': inventario
             })
 
+        warehouses = Warehouses.objects.all()  # <-- Aquí añades warehouses para formularios
+
         return render(request, 'products/product_detail.html', {
             'producto': producto,
-            'variantes': variantes_con_inventario
+            'variantes': variantes_con_inventario,
+            'warehouses': warehouses,
         })
-    
+
 @require_GET
 def variant_create(request, product_id):
     product = get_object_or_404(Products, pk=product_id)

@@ -1,60 +1,67 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="p-6 max-w-4xl mx-auto">
-    <h1 class="text-3xl font-semibold mb-6">Crear Movimiento</h1>
+<div class="card mx-auto" style="max-width: 800px; margin-top: 40px;">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Crear Movimiento</h5>
+    </div>
 
-    <!-- Aquí el cambio importante: action apunta a 'movement-create-submit' -->
-    <form method="post" action="{% url 'movement-create-submit' %}" id="movement-form" class="bg-white p-6 rounded-lg shadow-md">
-        {% csrf_token %}
+    <div class="card-block" style="padding: 25px;">
+        <form method="post" action="{% url 'movement-create-submit' %}" id="movement-form">
+            {% csrf_token %}
 
-        <div class="form-group mb-6">
-            <label for="id_variant" class="block text-gray-700 font-semibold mb-2">Variante</label>
-            {{ form.variant }}
-        </div>
+            <div class="form-group mb-4">
+                <label for="id_variant" class="font-weight-bold">Variante</label>
+                {{ form.variant }}
+            </div>
 
-        <div class="form-group mb-6">
-            <label for="id_source_warehouse" class="block text-gray-700 font-semibold mb-2">Bodega de Origen</label>
-            {{ form.source_warehouse }}
-            <div id="stock-info" class="text-sm text-gray-500 mt-2"></div>
-        </div>
+            <div class="form-group mb-4">
+                <label for="id_source_warehouse" class="font-weight-bold">Bodega de Origen</label>
+                {{ form.source_warehouse }}
+                <div id="stock-info" class="text-muted small mt-2"></div>
+            </div>
 
-        <div class="form-group mb-6">
-            <label for="id_destination_warehouse" class="block text-gray-700 font-semibold mb-2">Bodega de Destino</label>
-            {{ form.destination_warehouse }}
-        </div>
+            <div class="form-group mb-4">
+                <label for="id_destination_warehouse" class="font-weight-bold">Bodega de Destino</label>
+                {{ form.destination_warehouse }}
+            </div>
 
-        <div class="form-group mb-6">
-            <label for="id_quantity" class="block text-gray-700 font-semibold mb-2">Cantidad</label>
-            {{ form.quantity }}
-        </div>
+            <div class="form-group mb-4">
+                <label for="id_quantity" class="font-weight-bold">Cantidad</label>
+                {{ form.quantity }}
+            </div>
 
-        <div class="form-group mb-6">
-            <label for="id_reason" class="block text-gray-700 font-semibold mb-2">Razón</label>
-            {{ form.reason }}
-        </div>
+            <div class="form-group mb-4">
+                <label for="id_reason" class="font-weight-bold">Razón</label>
+                {{ form.reason }}
+            </div>
 
-        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Crear Movimiento</button>
-    </form>
+            <div class="text-right">
+                <button type="submit" class="btn btn-primary" style="border-radius: 20px; padding: 8px 25px;">
+                    <i class="ti-check"></i> Crear Movimiento
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <style>
-    select, input[type="text"], input[type="number"] {
+    select, input[type="text"], input[type="number"], textarea {
         width: 100%;
         padding: 8px;
         border-radius: 5px;
-        border: 1px solid #ccc;
+        border: 1px solid #ced4da;
+        font-size: 14px;
     }
-    button {
-        background: #007bff;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        border-radius: 5px;
-        cursor: pointer;
+
+    .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        color: #333;
     }
-    button:hover {
-        background: #0056b3;
+
+    .btn-primary:hover {
+        background-color: #0056b3;
     }
 </style>
 
@@ -116,5 +123,4 @@
         resetDestinationOptions();
     });
 </script>
-
 {% endblock %}

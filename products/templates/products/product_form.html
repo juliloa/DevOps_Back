@@ -1,0 +1,21 @@
+<div class="mb-2">
+    <label>Nombre</label>
+    <input type="text" name="name" class="form-control" value="{{ product.name|default:'' }}" required>
+</div>
+<div class="mb-2">
+    <label>Descripción</label>
+    <textarea name="description" class="form-control">{{ product.description|default:'' }}</textarea>
+</div>
+<div class="mb-2">
+    <label>Categoría</label>
+    <select name="category" class="form-select" required>
+        <option value="" disabled {% if not product.category %}selected{% endif %}>Seleccione...</option>
+        {% for category in categories %}
+        <option value="{{ category.id }}" {% if product.category and product.category.id == category.id %}selected{% endif %}>{{ category.name }}</option>
+        {% endfor %}
+    </select>
+</div>
+<div class="mb-2">
+    <label>URL Imagen</label>
+    <input type="url" name="image_url" class="form-control" value="{{ product.image_url|default:'' }}">
+</div>

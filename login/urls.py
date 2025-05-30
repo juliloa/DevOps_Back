@@ -1,12 +1,18 @@
 
 from django.urls import path
-from .views import root_redirect
 from . import views
 from .views import password_reset_request_view, password_reset_submit_view
 from .views import password_reset_confirm_view, password_reset_confirm_submit_view
+from .views import landing_view,service_view,about_view,home_view,LogsListView
 
 urlpatterns = [
-    path('', root_redirect),  
+
+    path('home', home_view, name='home'),
+
+    path('', landing_view, name='landing'), 
+    path('landing/service/', service_view, name='service'), 
+    path('landing/about/', about_view, name='about'), 
+
     path('login/', views.login_form_view, name='login'),  
     path('login/submit/', views.login_submit_view, name='login_submit'),  
     path('logout/', views.logout_view, name='logout'),
@@ -17,6 +23,7 @@ urlpatterns = [
     path('users/<str:user_id>/edit/', views.user_edit_form_view, name='user-edit-form'),
     path('users/<str:user_id>/edit/submit/', views.user_edit_submit_view, name='user-edit-submit'),
     path('users/<str:user_id>/delete/', views.user_delete_view, name='user-delete'),
+    path('logs/', LogsListView.as_view(), name='logs_list'),
 
     path('password_reset/', password_reset_request_view, name='password_reset'),
     path('password_reset/submit/', password_reset_submit_view, name='password_reset_submit'),

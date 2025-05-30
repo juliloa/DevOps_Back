@@ -1,69 +1,118 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="p-6 max-w-7xl mx-auto">
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-3xl font-semibold">Lista de Movimientos</h1>
+<div class="card">
+    <div class="card-header">
+        <h5>Lista de Movimientos</h5>
+        <div class="card-header-right">
+            <a href="{% url 'movement-create' %}" class="btn btn-primary btn-sm" style="font-size: 14px; border-radius: 20px; padding: 5px 15px;">
+                <i class="ti-plus"></i> Crear Movimiento
+            </a>
+        </div>
     </div>
 
-    <div class="text-right mb-6">
-        <a href="{% url 'movement-create' %}">
-            <button class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Crear Movimiento</button>
-        </a>
-    </div>
-
-    <table class="min-w-full table-auto bg-white rounded-lg shadow-md">
-        <thead>
-            <tr class="bg-gray-800 text-white">
-                <th class="px-4 py-3">ID</th>
-                <th class="px-4 py-3">Producto</th>
-                <th class="px-4 py-3">Origen</th>
-                <th class="px-4 py-3">Destino</th>
-                <th class="px-4 py-3">Cantidad</th>
-                <th class="px-4 py-3">Estado</th>
-                <th class="px-4 py-3">Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for movement in movements %}
-                <tr class="border-b">
-                    <td class="px-4 py-3">{{ movement.id }}</td>
-                    <td class="px-4 py-3">{{ movement.variant.product.name }}</td>
-                    <td class="px-4 py-3">{{ movement.source_warehouse.name }}</td>
-                    <td class="px-4 py-3">{{ movement.destination_warehouse.name }}</td>
-                    <td class="px-4 py-3">{{ movement.quantity }}</td>
-                    <td class="px-4 py-3">{{ movement.status }}</td>
-                    <td class="px-4 py-3">
-                        {% if movement.status == 'Pending' %}
-                            {% if request.user.role.name|lower == "administrador" %}
-                            <div class="flex gap-2">
-                                <form method="post" action="{% url 'movement-confirm-submit' movement.id %}" style="display:inline;">
-                                    {% csrf_token %}
-                                    <button type="submit" class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 text-sm">
-                                        Confirmar
-                                    </button>
-                                </form>
-                                <form method="post" action="{% url 'movement-cancel-submit' movement.id %}" style="display:inline;">
-                                    {% csrf_token %}
-                                    <button type="submit" class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 text-sm">
-                                        Cancelar
-                                    </button>
-                                </form>
-                            </div>
+    <div class="card-block" style="padding: 20px 25px;">
+        <div class="dt-responsive table-responsive" style="width: 100%;">
+            <table id="movements-table" class="table table-striped table-bordered nowrap" style="width:100%">
+                <thead>
+                    <tr>
+                        <th class="text-center">ID</th>
+                        <th class="text-center">Producto</th>
+                        <th class="text-center">Origen</th>
+                        <th class="text-center">Destino</th>
+                        <th class="text-center">Cantidad</th>
+                        <th class="text-center">Estado</th>
+                        <th class="text-center" style="width: 200px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for movement in movements %}
+                    <tr>
+                        <td>{{ movement.id }}</td>
+                        <td>{{ movement.variant.product.name }}</td>
+                        <td>{{ movement.source_warehouse.name }}</td>
+                        <td>{{ movement.destination_warehouse.name }}</td>
+                        <td>{{ movement.quantity }}</td>
+                        <td class="text-center">
+                            {% if movement.status == 'Pending' %}
+                                <span class="badge badge-pill badge-warning" style="background-color: #FFC107; border-radius: 12px; color: #333;">Pendiente</span>
+                            {% elif movement.status == 'Completed' %}
+                                <span class="badge badge-pill badge-success" style="background-color: #4CAF50; border-radius: 12px;">Completado</span>
+                            {% elif movement.status == 'Cancelled' %}
+                                <span class="badge badge-pill badge-danger" style="background-color: #F44336; border-radius: 12px;">Cancelado</span>
                             {% else %}
-                                <span class="text-gray-400 italic">Pendiente de aprobación</span>
+                                {{ movement.status }}
                             {% endif %}
-                        {% else %}
-                            <span class="text-gray-400">Sin acciones</span>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="7" class="py-4 text-center">No hay movimientos registrados.</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                        </td>
+                        <td class="text-center">
+                            {% if movement.status == 'Pending' %}
+                                {% if request.user.role.name|lower == "administrador" %}
+                                <fieldset class="btn-group" style="display: inline-flex; gap: 8px; border: none; padding: 0;">
+                                    <form method="post" action="{% url 'movement-confirm-submit' movement.id %}" style="display:inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm" title="Confirmar" 
+                                            style="background-color: #E8F5E9; color: #2E7D32; border-radius: 15px; border: 1px solid #C8E6C9;">
+                                            <i class="ti-check"></i> Confirmar
+                                        </button>
+                                    </form>
+                                    <form method="post" action="{% url 'movement-cancel-submit' movement.id %}" style="display:inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm" title="Cancelar" 
+                                            style="background-color: #FFEBEE; color: #D32F2F; border-radius: 15px; border: 1px solid #FFCDD2;">
+                                            <i class="ti-close"></i> Cancelar
+                                        </button>
+                                    </form>
+                                </fieldset>
+                                {% else %}
+                                    <span class="text-muted" style="font-style: italic;">Pendiente de aprobación</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="text-muted">Sin acciones</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center">No hay movimientos registrados.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+
+<style>
+    .card-block {
+        padding: 1.25rem;
+    }
+    #movements-table {
+        margin: 0;
+    }
+    #movements-table th {
+        white-space: nowrap;
+        background-color: #f8f9fa;
+    }
+    .btn-group {
+        display: inline-flex;
+        gap: 8px;
+    }
+    .btn-group .btn {
+        padding: 5px 12px;
+        font-size: 13px;
+        transition: all 0.3s ease;
+    }
+    .btn-group .btn:hover {
+        opacity: 0.8;
+        transform: translateY(-1px);
+    }
+    .btn-primary {
+        background-color: #2196F3;
+        border-color: #2196F3;
+    }
+    .text-muted {
+        color: #6c757d;
+    }
+</style>
+
 {% endblock %}
