@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.4.0](https://github.com/juliloa/DevOps_Back/compare/v2.3.0...v2.4.0) (2025-05-30)
+
+
+### Features
+
+* add deployment configuration for Render platform ([#29](https://github.com/juliloa/DevOps_Back/issues/29)) ([41dc102](https://github.com/juliloa/DevOps_Back/commit/41dc10260ced3e157f6eafbc8cc56589d4b936ee))
+* add email notifications for movements and fix warehouse map filters ([#28](https://github.com/juliloa/DevOps_Back/issues/28)) ([c5d1d05](https://github.com/juliloa/DevOps_Back/commit/c5d1d0541fe53bcb0c13e1291cd3e3addcea16c3))
+* added landing page with improvements in layout, design, and styling ([#30](https://github.com/juliloa/DevOps_Back/issues/30)) ([97eb443](https://github.com/juliloa/DevOps_Back/commit/97eb4439d2c45ff3a96af9bef91ad73e1f74e344))
+* Implement role-based access control for protected views ([#26](https://github.com/juliloa/DevOps_Back/issues/26)) ([eaa5e74](https://github.com/juliloa/DevOps_Back/commit/eaa5e7446f2ed21265c67ab942adbe26934acf54))
+
+
+### Bug Fixes
+
+* settings.py ([a535ef0](https://github.com/juliloa/DevOps_Back/commit/a535ef0d32515263471cdd4cd45df3fb6e2af06d))
+* Update settings.py ([9d58459](https://github.com/juliloa/DevOps_Back/commit/9d58459d16e37b3268fc7a19ab124bc84ad8e8d1))
+
 ## [2.3.0](https://github.com/juliloa/DevOps_Back/compare/v2.2.0...v2.3.0) (2025-05-11)
 
 
