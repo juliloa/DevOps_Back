@@ -28,7 +28,6 @@ def warehouse_create(request):
             max_capacity=max_capacity,
             open_hours=open_hours,
         )
-        messages.success(request, 'Bodega creada con éxito.')
     return redirect(reverse('warehouse-list'))
 
 @require_POST
@@ -42,7 +41,6 @@ def warehouse_edit(request, id):
         warehouse.max_capacity = request.POST.get('max_capacity')
         warehouse.open_hours = request.POST.get('open_hours')
         warehouse.save()
-        messages.success(request, 'Bodega actualizada con éxito.')
     return redirect(reverse('warehouse-list'))
 
 @require_POST
@@ -50,5 +48,4 @@ def warehouse_delete(request, id):
     warehouse = get_object_or_404(Warehouses, pk=id)
     if request.method == 'POST':
         warehouse.delete()
-        messages.success(request, 'Bodega eliminada con éxito.')
     return redirect(reverse('warehouse-list'))

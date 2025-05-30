@@ -10,7 +10,7 @@
             </a>
         </div>
     </div>
-    
+
     <div class="card-block" style="padding: 20px 25px;">
         <div class="dt-responsive table-responsive" style="width: 100%;">
             <table id="movements-table" class="table table-striped table-bordered nowrap" style="width:100%">
@@ -47,20 +47,22 @@
                         <td class="text-center">
                             {% if movement.status == 'Pending' %}
                                 {% if request.user.role.name|lower == "administrador" %}
-                                <div class="btn-group" role="group">
+                                <fieldset class="btn-group" style="display: inline-flex; gap: 8px; border: none; padding: 0;">
                                     <form method="post" action="{% url 'movement-confirm-submit' movement.id %}" style="display:inline;">
                                         {% csrf_token %}
-                                        <button type="submit" class="btn btn-sm" title="Confirmar" style="background-color: #E8F5E9; color: #2E7D32; border-radius: 15px; border: 1px solid #C8E6C9;">
+                                        <button type="submit" class="btn btn-sm" title="Confirmar" 
+                                            style="background-color: #E8F5E9; color: #2E7D32; border-radius: 15px; border: 1px solid #C8E6C9;">
                                             <i class="ti-check"></i> Confirmar
                                         </button>
                                     </form>
                                     <form method="post" action="{% url 'movement-cancel-submit' movement.id %}" style="display:inline;">
                                         {% csrf_token %}
-                                        <button type="submit" class="btn btn-sm" title="Cancelar" style="background-color: #FFEBEE; color: #D32F2F; border-radius: 15px; border: 1px solid #FFCDD2;">
+                                        <button type="submit" class="btn btn-sm" title="Cancelar" 
+                                            style="background-color: #FFEBEE; color: #D32F2F; border-radius: 15px; border: 1px solid #FFCDD2;">
                                             <i class="ti-close"></i> Cancelar
                                         </button>
                                     </form>
-                                </div>
+                                </fieldset>
                                 {% else %}
                                     <span class="text-muted" style="font-style: italic;">Pendiente de aprobación</span>
                                 {% endif %}
@@ -91,8 +93,11 @@
         white-space: nowrap;
         background-color: #f8f9fa;
     }
+    .btn-group {
+        display: inline-flex;
+        gap: 8px;
+    }
     .btn-group .btn {
-        margin-right: 5px;
         padding: 5px 12px;
         font-size: 13px;
         transition: all 0.3s ease;
@@ -100,9 +105,6 @@
     .btn-group .btn:hover {
         opacity: 0.8;
         transform: translateY(-1px);
-    }
-    .btn-group .btn:last-child {
-        margin-right: 0;
     }
     .btn-primary {
         background-color: #2196F3;

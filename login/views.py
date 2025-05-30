@@ -110,7 +110,7 @@ def login_form_view(request):
 
 logger = logging.getLogger(__name__)
 
-
+@require_GET
 def home_view(request):
     # Verifica si el usuario está autenticado
     if not request.user.is_authenticated:

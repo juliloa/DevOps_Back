@@ -44,7 +44,7 @@
                             {% endif %}
                         </td>
                         <td class="text-center">
-                            <div class="btn-group" role="group">
+                            <fieldset class="btn-group" style="border:none; padding:0; margin:0;">
                                 <!-- Editar -->
                                 <button class="btn btn-sm" data-toggle="modal" data-target="#editModal-{{ producto.id }}" title="Editar"
                                     style="background-color: #E3F2FD; color: #1976D2; border-radius: 15px; border: 1px solid #BBDEFB;">
@@ -61,7 +61,7 @@
                                    style="background-color: #E8F5E9; color: #388E3C; border-radius: 15px; border: 1px solid #C8E6C9; display: inline-flex; align-items: center; justify-content: center;">
                                     <i class="ti-eye"></i>
                                 </a>
-                            </div>
+                            </fieldset>
                         </td>
                     </tr>
                     {% endfor %}
@@ -74,8 +74,8 @@
 <!-- Modales por producto (fuera de la tabla) -->
 {% for producto in productos %}
 <!-- Editar -->
-<div class="modal fade" id="editModal-{{ producto.id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel-{{ producto.id }}" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+<div class="modal fade" id="editModal-{{ producto.id }}" tabindex="-1" aria-labelledby="editModalLabel-{{ producto.id }}" aria-hidden="true">
+  <dialog class="modal-dialog" aria-modal="true">
     <form method="POST" action="{% url 'product-edit-post' producto.id %}" class="modal-content">
         {% csrf_token %}
         <div class="modal-header">
@@ -93,12 +93,12 @@
             </button>
         </div>
     </form>
-  </div>
+  </dialog>
 </div>
 
 <!-- Eliminar -->
-<div class="modal fade" id="deleteModal-{{ producto.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel-{{ producto.id }}" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+<div class="modal fade" id="deleteModal-{{ producto.id }}" tabindex="-1" aria-labelledby="deleteModalLabel-{{ producto.id }}" aria-hidden="true">
+  <dialog class="modal-dialog" aria-modal="true">
     <form method="POST" action="{% url 'product-delete' producto.id %}" class="modal-content">
         {% csrf_token %}
         <div class="modal-header">
@@ -119,13 +119,13 @@
             </button>
         </div>
     </form>
-  </div>
+  </dialog>
 </div>
 {% endfor %}
 
 <!-- Modal Crear Producto -->
-<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+<div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+  <dialog class="modal-dialog" aria-modal="true">
     <form method="POST" action="{% url 'product-create-post' %}" class="modal-content">
         {% csrf_token %}
         <div class="modal-header">
@@ -143,7 +143,7 @@
             </button>
         </div>
     </form>
-  </div>
+  </dialog>
 </div>
 
 <style>
