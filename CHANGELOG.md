@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.0](https://github.com/juliloa/DevOps_Back/compare/v2.4.0...v2.5.0) (2025-05-30)
+
+
+### Features
+
+* update submodule mega-able-lite pointer ([#32](https://github.com/juliloa/DevOps_Back/issues/32)) ([833ac5a](https://github.com/juliloa/DevOps_Back/commit/833ac5a123c5859fb032f24a094893e69046f030))
+
 ## [2.4.0](https://github.com/juliloa/DevOps_Back/compare/v2.3.0...v2.4.0) (2025-05-30)
 
 
