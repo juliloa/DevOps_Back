@@ -1,0 +1,24 @@
+<div class="mb-2">
+    <label>Nombre</label>
+    <input type="text" name="name" class="form-control" value="{{ bodega.name|default:'' }}" required>
+</div>
+<div class="mb-2">
+    <label>Teléfono</label>
+    <input type="text" name="phone" class="form-control" value="{{ bodega.phone|default:'' }}">
+</div>
+<div class="mb-2">
+    <label>Email</label>
+    <input type="email" name="email" class="form-control" value="{{ bodega.email|default:'' }}">
+</div>
+<div class="mb-2">
+    <label>Ubicación</label>
+    <textarea name="location" class="form-control" required>{{ bodega.location|default:'' }}</textarea>
+</div>
+<div class="mb-2">
+    <label>Capacidad Máxima</label>
+    <input type="number" name="max_capacity" class="form-control" value="{{ bodega.max_capacity|default:'' }}" required>
+</div>
+<div class="mb-2">
+    <label>Horario</label>
+    <input type="text" name="open_hours" class="form-control" value="{{ bodega.open_hours|default:'06:00-22:00' }}">
+</div>

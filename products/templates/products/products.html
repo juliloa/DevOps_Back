@@ -1,122 +1,174 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<div class="flex min-h-screen">
+<div class="container py-4">
 
-<!-- Sidebar lateral izquierdo -->
-<aside class="w-64 bg-white text-black p-6 space-y-6 hidden md:block">
-
-
-    <h2 class="text-2xl font-bold mb-6">Filtros</h2>
-
-    <!-- Filtro Categoría -->
-    <div>
-    <label for="category-filter" class="block font-semibold mb-2">Categoría:</label>
-    <select id="category-filter" onchange="window.location.href=this.value" class="w-full p-2 rounded text-black">
-        <option value="" selected>Todos</option>
-        <option value="{% url 'product-category-filter' category_id=1 %}">Ropa</option>
-        <option value="{% url 'product-category-filter' category_id=2 %}">Tecnología</option>
-    </select>
+    <!-- Título de página -->
+    <div class="mb-4">
+        <h2>
+            {% if categoria_seleccionada %}
+                Mostrando productos en: <strong>{{ categoria_seleccionada.name }}</strong>
+            {% elif bodega_seleccionada %}
+                Mostrando productos en: <strong>{{ bodega_seleccionada.name }}</strong>
+            {% elif min_price %}
+                Precio desde <strong>${{ min_price }}</strong>{% if max_price %} hasta <strong>${{ max_price }}</strong>{% endif %}
+            {% else %}
+                Catálogo de Productos
+            {% endif %}
+        </h2>
     </div>
 
-    <!-- Filtro Bodega -->
-    <div>
-    <label for="warehouse-filter" class="block font-semibold mb-2">Bodega:</label>
-    <select id="warehouse-filter" onchange="window.location.href=this.value" class="w-full p-2 rounded text-black">
-        <option value="" selected>Todas</option>
-        <option value="{% url 'product-warehouse-filter' warehouse_id=1 %}">Envigado</option>
-        <option value="{% url 'product-warehouse-filter' warehouse_id=2 %}">Sabaneta</option>
-        <option value="{% url 'product-warehouse-filter' warehouse_id=3 %}">Itagüí</option>
-        <option value="{% url 'product-warehouse-filter' warehouse_id=4 %}">El Poblado</option>
-        <option value="{% url 'product-warehouse-filter' warehouse_id=5 %}">Bello</option>
-        <option value="{% url 'product-warehouse-filter' warehouse_id=6 %}">Girardota</option>
-    </select>
+    <!-- Filtros -->
+    <div class="filters-panel">
+        <div class="row g-3 align-items-end">
+            <!-- Filtro Categoría -->
+            <div class="col-md-3">
+                <label for="category-filter" class="form-label">Categoría:</label>
+                <select id="category-filter" onchange="window.location.href=this.value" class="form-select">
+                    <option value="" selected>Todos</option>
+                    <option value="{% url 'product-category-filter' category_id=1 %}">Ropa</option>
+                    <option value="{% url 'product-category-filter' category_id=2 %}">Tecnología</option>
+                </select>
+            </div>
+
+            <!-- Filtro Bodega -->
+            <div class="col-md-3">
+                <label for="warehouse-filter" class="form-label">Bodega:</label>
+                <select id="warehouse-filter" onchange="window.location.href=this.value" class="form-select">
+                    <option value="" selected>Todas</option>
+                    <option value="{% url 'product-warehouse-filter' warehouse_id=1 %}">Envigado</option>
+                    <option value="{% url 'product-warehouse-filter' warehouse_id=2 %}">Sabaneta</option>
+                    <option value="{% url 'product-warehouse-filter' warehouse_id=3 %}">Itagüí</option>
+                    <option value="{% url 'product-warehouse-filter' warehouse_id=4 %}">El Poblado</option>
+                    <option value="{% url 'product-warehouse-filter' warehouse_id=5 %}">Bello</option>
+                    <option value="{% url 'product-warehouse-filter' warehouse_id=6 %}">Girardota</option>
+                </select>
+            </div>
+
+            <!-- Botón filtrar por precio -->
+            <div class="col-md-2 d-grid">
+                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#precioModal">
+                    Filtrar por precio
+                </button>
+            </div>
+
+            <!-- Botón filtrar por atributos -->
+            <div class="col-md-2 d-grid">
+                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#atributosModal">
+                    Filtrar por atributos
+                </button>
+            </div>
+
+            <!-- Botón limpiar filtros -->
+            <div class="col-md-2 d-grid">
+                <a href="{% url 'catalogo-view' %}" class="btn btn-outline-secondary">
+                    Limpiar filtros
+                </a>
+            </div>
+        </div>
     </div>
 
-    <!-- Filtro Precio -->
-    <form method="get" action="{% url 'product-price-filter' %}" class="space-y-2">
-    <label for="min_price" class="block font-semibold">Precio mínimo:</label>
-    <input type="number" step="0.01" name="min_price" id="min_price" class="w-full p-2 rounded text-black" value="{{ request.GET.min_price }}">
-    <label for="max_price" class="block font-semibold">Precio máximo:</label>
-    <input type="number" step="0.01" name="max_price" id="max_price" class="w-full p-2 rounded text-black" value="{{ request.GET.max_price }}">
-    <button type="submit" class="bg-blue-500 text-white w-full py-2 rounded mt-2 hover:bg-blue-600">Filtrar</button>
-    </form>
-
-    <!-- Filtros Atributos -->
-    <form method="get" action="{% url 'product-filter-attributes' %}" class="space-y-4 mt-6">
-    {% for atributo, valores in atributos_values.items %}
-    <div>
-        <button type="button" class="w-full text-left font-semibold" onclick="this.nextElementSibling.classList.toggle('hidden')">
-        {{ atributo|title }}
-        </button>
-        <div class="hidden mt-2">
-        {% for value in valores %}
-        <label class="flex items-center space-x-2 text-sm">
-            <input type="checkbox" name="{{ atributo }}" value="{{ value }}" class="form-checkbox text-blue-600">
-            <span>{{ value }}</span>
-        </label>
+    <!-- Lista de productos -->
+    <div class="row g-4 mt-3">
+        {% for producto in productos %}
+        <div class="col-md-6 col-lg-4 col-xl-3">
+            <div class="card product-card h-100">
+                <img src="{{ producto.image_url }}" class="product-img" alt="{{ producto.name }}">
+                <div class="card-body py-2">
+                    <h5 class="card-title mb-1">{{ producto.name }}</h5>
+                    <p class="card-text text-muted small mb-1">{{ producto.description|truncatechars:50 }}</p>
+                    <p class="card-text"><small class="text-muted">Categoría: {{ producto.category.name }}</small></p>
+                    {% if producto.variants.all %}
+                        <p class="text-success fw-bold mb-0">${{ producto.variants.first.price|floatformat:2 }}</p>
+                    {% else %}
+                        <p class="text-danger fw-bold mb-0">Sin precio disponible</p>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-transparent border-top-0 py-2">
+                    <a href="{% url 'product-detail' producto.id %}" class="btn btn-primary w-100 btn-sm">Ver producto</a>
+                </div>
+            </div>
+        </div>
         {% endfor %}
-        </div>
     </div>
-    {% endfor %}
-    <button type="submit" class="bg-blue-500 text-white w-full py-2 rounded hover:bg-blue-600">Filtrar</button>
-    </form>
-</aside>
-
-<!-- Contenido principal -->
-<main class="flex-1 p-6">
-    <div class="flex justify-between items-center mb-6">
-    {% if categoria_seleccionada %}
-    <p class="text-gray-700 mb-4">
-        Mostrando productos en la categoría: <span class="font-semibold">{{ categoria_seleccionada.name }}</span>
-    </p>
-    {% elif bodega_seleccionada %}
-    <p class="text-gray-700 mb-4">
-        Mostrando productos en: <span class="font-semibold">{{ bodega_seleccionada.name }}</span>
-    </p>
-    {% elif min_price %}
-    <p class="text-gray-700 mb-4">
-        Mostrando productos con precio desde <span class="font-semibold">${{ min_price }}</span>
-        {% if max_price %} hasta <span class="font-semibold">${{ max_price }}</span>{% endif %}
-    </p>
-    {% else %}
-    <h1 class="text-3xl font-semibold">Catálogo de Productos</h1>
-    {% endif %}
-    {% if request.user.role.name|lower == "administrador" %}
-    <a href="{% url 'product-create' %}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">+ Agregar producto</a>
-    {% endif %}
-    </div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-    {% for producto in productos %}
-    <div class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-all">
-        <img src="{{ producto.image_url }}" alt="{{ producto.name }}" class="w-full h-48 object-cover rounded-lg mb-4">
-        <h2 class="text-xl font-semibold">{{ producto.name }}</h2>
-        <p class="text-gray-600 text-sm mb-4">{{ producto.description }}</p>
-        <p class="text-lg font-bold">Categoría: {{ producto.category.name }}</p>
-        {% if producto.variants.all %}
-        <p class="text-lg font-bold text-green-600 mt-4">Precio: ${{ producto.variants.first.price|floatformat:2 }}</p>
-        {% else %}
-        <p class="text-lg font-bold text-red-600 mt-4">Sin precio disponible</p>
-        {% endif %}
-        <div class="mt-4 flex justify-between items-center">
-          <a href="{% url 'product-detail' producto.id %}" class="text-blue-600 font-semibold hover:underline">
-            Ver producto
-          </a>
-          {% if request.user.role.name|lower == "administrador" %}
-          <div class="mt-2 flex gap-3">
-            <a href="{% url 'product-edit' producto.id %}" class="text-yellow-600 hover:underline">Editar</a>
-            <form action="{% url 'product-delete' producto.id %}" method="post" onsubmit="return confirm('¿Eliminar este producto?')">
-              {% csrf_token %}
-              <button type="submit" class="text-red-600 hover:underline">Eliminar</button>
-            </form>
-          </div>
-          {% endif %}
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-  </main>
-
 </div>
+
+<!-- Modal para filtros de precio -->
+<div class="modal fade" id="precioModal" tabindex="-1" aria-labelledby="precioModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="precioModalLabel">Filtrar por precio</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <form method="get" action="{% url 'product-price-filter' %}">
+          <div class="mb-3">
+            <label for="min_price_modal" class="form-label">Precio mínimo:</label>
+            <input type="number" id="min_price_modal" name="min_price" class="form-control" step="0.01" value="{{ request.GET.min_price }}">
+          </div>
+          <div class="mb-3">
+            <label for="max_price_modal" class="form-label">Precio máximo:</label>
+            <input type="number" id="max_price_modal" name="max_price" class="form-control" step="0.01" value="{{ request.GET.max_price }}">
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para filtros de atributos -->
+<div class="modal fade" id="atributosModal" tabindex="-1" aria-labelledby="atributosModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="atributosModalLabel">Filtrar por atributos</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <form method="get" action="{% url 'product-filter-attributes' %}">
+          {% for atributo, valores in atributos_values.items %}
+          <div class="mb-3">
+            <strong>{{ atributo|title }}</strong>
+            {% for value in valores %}
+            <div class="form-check">
+              <input type="checkbox" name="{{ atributo }}" value="{{ value }}" class="form-check-input" id="{{ atributo }}-{{ forloop.counter }}">
+              <label class="form-check-label" for="{{ atributo }}-{{ forloop.counter }}">{{ value }}</label>
+            </div>
+            {% endfor %}
+          </div>
+          {% endfor %}
+          <div class="modal-footer px-0">
+            <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+    /* Reducir altura de la imagen para card más corta */
+    .product-img {
+        max-height: 140px;
+        object-fit: contain;
+        padding: 10px;
+        background-color: #ffffff;
+    }
+
+    /* Ajustar padding de card body para que quede más compacto */
+    .card-body {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    /* Ajustar padding del footer */
+    .card-footer {
+        padding: 0.25rem 1rem;
+    }
+</style>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 {% endblock %}

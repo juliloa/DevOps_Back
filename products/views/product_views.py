@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from dbmodels.models import Products, Categories
+from dbmodels.models import Products, Categories,Inventory,Warehouses
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.cache import never_cache
 from django.utils.timezone import now
@@ -27,6 +27,18 @@ def catalogo_view(request):
         'atributos_seleccionados': atributos_seleccionados,
     }
     return render(request, 'products/products.html', contexto)
+
+@require_GET
+def product_list(request):
+    productos = Products.objects.all()
+    categories = Categories.objects.all()
+
+    contexto = {
+        'productos': productos,
+        'categories': categories,
+    }
+    return render(request, 'products/product-list.html', contexto)
+
 
 @require_GET
 def product_create(request):
@@ -83,3 +95,40 @@ def product_delete(_request, pk):
     product = get_object_or_404(Products, pk=pk)
     product.delete()
     return redirect('catalogo-view')
+
+
+@require_POST
+def update_inventory_quantity(request):
+    inventory_id = request.POST.get('inventory_id')
+    new_quantity = request.POST.get('quantity')
+    if inventory_id and new_quantity is not None:
+        try:
+            inventory = Inventory.objects.get(id=inventory_id)
+            inventory.quantity = int(new_quantity)
+            inventory.save()
+        except Inventory.DoesNotExist:
+            pass
+    return redirect('inventory-list')
+
+@require_GET
+def inventory_list_view(request):
+    inventario = Inventory.objects.select_related('variant__product', 'warehouse').all()
+
+    warehouse_filter = request.GET.get('warehouse')
+    product_filter = request.GET.get('product')
+    variant_filter = request.GET.get('variant')
+
+    if warehouse_filter:
+        inventario = inventario.filter(warehouse_id=warehouse_filter)
+    if product_filter:
+        inventario = inventario.filter(variant__product__name__icontains=product_filter)
+    if variant_filter:
+        inventario = inventario.filter(variant__variant_code__icontains=variant_filter)
+
+    warehouses = Warehouses.objects.all()
+
+    context = {
+        'inventario': inventario,
+        'warehouses': warehouses,
+    }
+    return render(request, 'products/inventory_list.html', context)

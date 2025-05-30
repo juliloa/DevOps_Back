@@ -1,237 +1,423 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<div class="flex">
-    <!-- Sidebar de filtros -->
-    <div class="w-1/4 p-4">
-        <div class="bg-white rounded-2xl shadow p-4 space-y-4">
-            <h2 class="text-xl font-semibold border-b pb-2">Filtrar variantes</h2>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="anonymous">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --secondary-color: #f3f4f6;
+            --accent-color: #10b981;
+            --text-color: #374151;
+            --border-color: #e5e7eb;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-color);
+            background-color: #f9fafb;
+        }
+        
+        .sidebar-card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+        
+        .input-field {
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
+        }
+        
+        .input-field:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+        
+        .btn {
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-clear {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+        }
+        
+        .btn-clear:hover {
+            background-color: #e5e7eb;
+        }
+        
+        /* Estilos para el buscador de variantes */
+        .variant-search-container {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        
+        .variant-list {
+            position: absolute;
+            width: 100%;
+            max-height: 12rem;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 0 0 0.5rem 0.5rem;
+            border-top: none;
+            z-index: 1000;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-top: -1px;
+            overflow-y: auto;
+        }
+        
+        .variant-list li {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .variant-list li:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+        
+        .variant-input-with-list {
+            border-radius: 0.5rem 0.5rem 0 0 !important;
+        }
+        
+        .variant-card {
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+        }
+        
+        .map-container {
+            height: 600px;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+        
+        .section-title {
+            color: var(--text-color);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .info-text {
+            color: var(--text-color);
+            opacity: 0.9;
+        }
+        
+        .info-label {
+            font-weight: 500;
+            color: #4b5563;
+        }
+        
+        /* Scrollbar personalizada */
+        .variant-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .variant-list::-webkit-scrollbar-track {
+            background: var(--secondary-color);
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+        
+        .variant-list::-webkit-scrollbar-thumb {
+            background-color: var(--primary-color);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="bg-page">
+    <div class="page-container">
 
-            <!-- Filtro con input + lista -->
-            <label for="variantFilterInput" class="block text-sm font-medium text-gray-700">Buscar código de variante</label>
-            <input
-                type="text"
-                id="variantFilterInput"
-                placeholder="Escribe código de variante..."
-                class="w-full mt-1 p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <ul id="variantList" class="border border-gray-300 rounded mt-1 max-h-48 overflow-auto hidden bg-white shadow-sm"></ul>
-
-            <!-- Selector de bodega -->
-            <label for="warehouseFilter" class="block text-sm font-medium text-gray-700 mt-4">Filtrar por bodega</label>
-            <select id="warehouseFilter" class="w-full mt-1 p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">Todas las bodegas</option>
-                {% for bodega in warehouses %}
-                    <option value="{{ bodega.id }}">{{ bodega.name }}</option>
-                {% endfor %}
-            </select>
-
-            <!-- Botón limpiar -->
-            <button id="clearFilter" class="w-full mt-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition">
-                Limpiar filtro
-            </button>
-
-            <!-- Card de detalles de la variante -->
-            <div id="variantInfo" class="hidden bg-gray-50 rounded-xl p-4 border mt-4 shadow-sm space-y-2">
-                <div class="flex items-center space-x-4">
-                    <img id="variantImage" src="" alt="Producto" class="w-20 h-20 object-cover rounded-lg border" />
-                    <div>
-                        <h3 id="variantProductName" class="text-lg font-bold">Nombre del producto</h3>
-                        <p id="variantCategory" class="text-sm text-gray-600"></p>
+        <div class="flex flex-col lg:flex-row gap-6">
+            <!-- Sidebar de filtros -->
+            <div class="w-full lg:w-1/4">
+                <div class="sidebar-card p-5 space-y-5">
+                    <h2 class="section-title text-lg">Filtrar variantes</h2>
+                    
+                    <!-- Buscador de variantes -->
+                    <div class="variant-search-container">
+                        <label for="variantFilterInput" class="block text-sm font-medium text-gray-700">Buscar código de variante</label>
+                        <input
+                            type="text"
+                            id="variantFilterInput"
+                            placeholder="Escribe código de variante..."
+                            class="input-field w-full p-2.5 focus:ring-2 focus:ring-blue-300"
+                        />
+                        <ul id="variantList" class="variant-list hidden"></ul>
+                    </div>
+                    
+                    <!-- Selector de bodega -->
+                    <div class="space-y-2">
+                        <label for="warehouseFilter" class="block text-sm font-medium text-gray-700">Filtrar por bodega</label>
+                        <select id="warehouseFilter" class="input-field w-full p-2.5 focus:ring-2 focus:ring-blue-300">
+                            <option value="">Todas las bodegas</option>
+                            {% for bodega in warehouses %}
+                                <option value="{{ bodega.id }}">{{ bodega.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <!-- Botón limpiar -->
+                    <button id="clearFilter" class="btn btn-clear w-full py-2.5 px-4 hover:bg-gray-200">
+                        Limpiar filtros
+                    </button>
+                    
+                    <!-- Card de detalles de la variante -->
+                    <div id="variantInfo" class="variant-card hidden p-4 space-y-3">
+                        <div class="flex items-start space-x-4">
+                            <img id="variantImage" src="" alt="Producto" class="w-16 h-16 object-cover rounded-lg border border-gray-200" />
+                            <div>
+                                <h3 id="variantProductName" class="font-bold text-gray-800"></h3>
+                                <p id="variantCategory" class="text-sm text-gray-500"></p>
+                            </div>
+                        </div>
+                        <div class="space-y-1.5 text-sm">
+                            <p><span class="info-label">Código:</span> <span id="variantCode" class="info-text"></span></p>
+                            <p><span class="info-label">Precio:</span> $<span id="variantPrice" class="info-text"></span></p>
+                            <p><span class="info-label">Stock Total:</span> <span id="variantStock" class="info-text"></span></p>
+                            <p><span class="info-label">Atributos:</span> <span id="variantAttributes" class="info-text"></span></p>
+                        </div>
                     </div>
                 </div>
-                <div class="text-sm mt-2">
-                    <p><strong>Código de Variante:</strong> <span id="variantCode"></span></p>
-                    <p><strong>Precio:</strong> $<span id="variantPrice"></span></p>
-                    <p><strong>Stock Total:</strong> <span id="variantStock"></span></p>
-                    <p><strong>Atributos:</strong> <span id="variantAttributes"></span></p>
-                </div>
+            </div>
+            
+            <!-- Mapa -->
+            <div class="w-full lg:w-3/4">
+                <div id="map" class="map-container"></div>
             </div>
         </div>
     </div>
 
-    <!-- Mapa -->
-    <div class="w-3/4">
-        <div id="map" style="height: 600px;" class="rounded shadow"></div>
-    </div>
-</div>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    
+    <!-- Datos para JavaScript -->
+    {{ variants|json_script:"variantsData" }}
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Inicializar mapa
+        const map = L.map("map").setView([6.2442, -75.5812], 11);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: "&copy; OpenStreetMap contributors",
+        }).addTo(map);
 
-<!-- Leaflet -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="anonymous">
-<script src="https://unpkg.com/leaflet/dist/leaflet.js" integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH" crossorigin="anonymous"></script>
+        const inventoryData = JSON.parse(`{{ inventory_data|escapejs }}`);
+        const variantsData = JSON.parse(document.getElementById("variantsData").textContent);
 
-<!-- Datos para JavaScript -->
-{{ variants|json_script:"variantsData" }}
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const map = L.map("map").setView([6.2442, -75.5812], 11);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "&copy; OpenStreetMap contributors",
-    }).addTo(map);
+        // Elementos del DOM
+        const variantFilterInput = document.getElementById("variantFilterInput");
+        const warehouseFilter = document.getElementById("warehouseFilter");
+        const variantList = document.getElementById("variantList");
+        const clearButton = document.getElementById("clearFilter");
+        const variantInfoCard = document.getElementById("variantInfo");
 
-    const inventoryData = JSON.parse(`{{ inventory_data|escapejs }}`);
-    const variantsData = JSON.parse(document.getElementById("variantsData").textContent);
+        let currentMarkers = [];
+        let selectedVariantId = null;
+        let selectedWarehouseId = "";
 
-    const variantFilterInput = document.getElementById("variantFilterInput");
-    const warehouseFilter = document.getElementById("warehouseFilter");
-    const variantList = document.getElementById("variantList");
-    const clearButton = document.getElementById("clearFilter");
-    const card = document.getElementById("variantInfo");
+        // Función para actualizar el mapa
+        function updateMap() {
+            // Limpiar marcadores existentes
+            currentMarkers.forEach(marker => map.removeLayer(marker));
+            currentMarkers = [];
 
-    let currentMarkers = [];
-    let selectedVariantId = null;
-    let selectedWarehouseId = "";
+            let filtered = inventoryData;
 
-    function updateMap() {
-    currentMarkers.forEach(marker => map.removeLayer(marker));
-    currentMarkers = [];
-
-    let filtered = inventoryData;
-
-    if (selectedVariantId) {
-        filtered = filtered.filter(item => item.variant_id == selectedVariantId);
-    }
-
-    if (selectedWarehouseId) {
-        filtered = filtered.filter(item => item.warehouse.id == selectedWarehouseId);
-    }
-
-    if (!selectedVariantId) {
-        // Agrupar por bodega
-        const warehousesMap = {};
-        filtered.forEach(item => {
-            const wid = item.warehouse.id;
-            if (!warehousesMap[wid]) {
-                warehousesMap[wid] = {
-                    warehouse: item.warehouse,
-                    variants: []
-                };
+            // Aplicar filtros
+            if (selectedVariantId) {
+                filtered = filtered.filter(item => item.variant_id == selectedVariantId);
             }
-            warehousesMap[wid].variants.push(item);
-        });
 
-        Object.values(warehousesMap).forEach(entry => {
-            const lat = entry.warehouse.latitude;
-            const lon = entry.warehouse.longitude;
-            if (lat && lon) {
-                const popupHtml = `
-                    <strong>${entry.warehouse.name}</strong><br>
-                    <u>Variantes en esta bodega:</u><br>
-                    <ul style="padding-left: 1rem; margin-top: 0.3rem;">
-                        ${entry.variants.map(v =>
-                            `<li>• ${v.variant_name} (${v.quantity} unidades)</li>`
-                        ).join('')}
-                    </ul>
-                `;
-                const marker = L.marker([lat, lon])
-                    .addTo(map)
-                    .bindPopup(popupHtml);
-                currentMarkers.push(marker);
+            if (selectedWarehouseId) {
+                filtered = filtered.filter(item => item.warehouse.id == selectedWarehouseId);
             }
-        });
 
-    } else {
-        // Mostrar marcador normal por variante
-        filtered.forEach(item => {
-            const lat = item.warehouse.latitude;
-            const lon = item.warehouse.longitude;
-            if (lat && lon) {
-                const marker = L.marker([lat, lon])
-                    .addTo(map)
-                    .bindPopup(`
-                        <strong>${item.variant_name}</strong><br>
-                        Bodega: ${item.warehouse.name}<br>
-                        Cantidad: ${item.quantity}
-                    `);
-                currentMarkers.push(marker);
+            // Mostrar marcadores según los filtros
+            if (!selectedVariantId) {
+                // Agrupar por bodega si no hay variante seleccionada
+                const warehousesMap = {};
+                filtered.forEach(item => {
+                    const wid = item.warehouse.id;
+                    if (!warehousesMap[wid]) {
+                        warehousesMap[wid] = {
+                            warehouse: item.warehouse,
+                            variants: []
+                        };
+                    }
+                    warehousesMap[wid].variants.push(item);
+                });
+
+                // Añadir marcadores para cada bodega
+                Object.values(warehousesMap).forEach(entry => {
+                    const lat = entry.warehouse.latitude;
+                    const lon = entry.warehouse.longitude;
+                    if (lat && lon) {
+                        const popupHtml = `
+                            <div class="space-y-1">
+                                <h3 class="font-bold text-blue-600">${entry.warehouse.name}</h3>
+                                <p class="text-sm text-gray-600">Variantes en stock:</p>
+                                <ul class="text-sm space-y-1">
+                                    ${entry.variants.map(v =>
+                                        `<li class="flex justify-between">
+                                            <span>${v.variant_name}</span>
+                                            <span class="font-medium">${v.quantity} unidades</span>
+                                        </li>`
+                                    ).join('')}
+                                </ul>
+                            </div>
+                        `;
+                        const marker = L.marker([lat, lon])
+                            .addTo(map)
+                            .bindPopup(popupHtml);
+                        currentMarkers.push(marker);
+                    }
+                });
+
+            } else {
+                // Mostrar marcadores específicos para la variante seleccionada
+                filtered.forEach(item => {
+                    const lat = item.warehouse.latitude;
+                    const lon = item.warehouse.longitude;
+                    if (lat && lon) {
+                        const popupHtml = `
+                            <div class="space-y-1">
+                                <h3 class="font-bold text-blue-600">${item.variant_name}</h3>
+                                <p class="text-sm"><span class="font-medium">Bodega:</span> ${item.warehouse.name}</p>
+                                <p class="text-sm"><span class="font-medium">Cantidad:</span> ${item.quantity} unidades</p>
+                            </div>
+                        `;
+                        const marker = L.marker([lat, lon])
+                            .addTo(map)
+                            .bindPopup(popupHtml);
+                        currentMarkers.push(marker);
+                    }
+                });
             }
-        });
-    }
 
-    // Centrar el mapa si hay resultados
-    if (filtered.length > 0) {
-        const first = filtered[0].warehouse;
-        map.setView([first.latitude, first.longitude], 13);
-    }
+            // Centrar el mapa si hay resultados
+            if (filtered.length > 0) {
+                const first = filtered[0].warehouse;
+                map.setView([first.latitude, first.longitude], 13);
+            }
 
-    // Mostrar tarjeta solo si hay una variante seleccionada
-    if (selectedVariantId && filtered.length > 0) {
-        const first = filtered[0];
-        const totalStock = inventoryData
-            .filter(item => item.variant_id == selectedVariantId)
-            .reduce((sum, i) => sum + i.quantity, 0);
-        document.getElementById("variantImage").src = first.product_image;
-        document.getElementById("variantProductName").textContent = first.product_name;
-        document.getElementById("variantCategory").textContent = first.category_name;
-        document.getElementById("variantCode").textContent = first.variant_code;
-        document.getElementById("variantPrice").textContent = first.price;
-        document.getElementById("variantStock").textContent = totalStock;
-        document.getElementById("variantAttributes").textContent = first.attributes;
-        card.classList.remove("hidden");
-    } else {
-        card.classList.add("hidden");
-    }
-}
-
-
-    function showFilteredVariants(query) {
-        variantList.innerHTML = "";
-
-        const filtered = !query
-            ? variantsData
-            : variantsData.filter(v =>
-                v.variant_code.toLowerCase().includes(query.toLowerCase())
-            );
-
-        if (filtered.length === 0) {
-            variantList.innerHTML = "<li class='p-2 text-gray-500'>No hay variantes</li>";
-            variantList.classList.remove("hidden");
-            return;
+            // Actualizar tarjeta de información de la variante
+            updateVariantCard();
         }
 
-        filtered.forEach(v => {
-            const li = document.createElement("li");
-            li.textContent = v.variant_code;
-            li.className = "p-2 cursor-pointer hover:bg-blue-100";
-            li.dataset.id = v.id;
-            variantList.appendChild(li);
+        // Función para actualizar la tarjeta de información de la variante
+        function updateVariantCard() {
+            if (selectedVariantId && inventoryData.some(item => item.variant_id == selectedVariantId)) {
+                const variantItems = inventoryData.filter(item => item.variant_id == selectedVariantId);
+                const firstItem = variantItems[0];
+                const totalStock = variantItems.reduce((sum, i) => sum + i.quantity, 0);
+                
+                // Actualizar contenido de la tarjeta
+                document.getElementById("variantImage").src = firstItem.product_image || 'https://via.placeholder.com/80';
+                document.getElementById("variantProductName").textContent = firstItem.product_name;
+                document.getElementById("variantCategory").textContent = firstItem.category_name || 'Sin categoría';
+                document.getElementById("variantCode").textContent = firstItem.variant_code;
+                document.getElementById("variantPrice").textContent = firstItem.price?.toLocaleString() || '0';
+                document.getElementById("variantStock").textContent = totalStock;
+                document.getElementById("variantAttributes").textContent = firstItem.attributes || 'Sin atributos';
+                
+                variantInfoCard.classList.remove("hidden");
+            } else {
+                variantInfoCard.classList.add("hidden");
+            }
+        }
+
+        // Función para mostrar variantes filtradas en la lista
+        function showFilteredVariants(query) {
+            variantList.innerHTML = "";
+
+            const filtered = !query
+                ? variantsData
+                : variantsData.filter(v =>
+                    v.variant_code.toLowerCase().includes(query.toLowerCase())
+                );
+
+            if (filtered.length === 0) {
+                const li = document.createElement("li");
+                li.textContent = "No se encontraron variantes";
+                li.className = "p-2 text-gray-500 italic";
+                variantList.appendChild(li);
+            } else {
+                filtered.forEach(v => {
+                    const li = document.createElement("li");
+                    li.textContent = v.variant_code;
+                    li.className = "p-2 hover:bg-blue-50";
+                    li.dataset.id = v.id;
+                    variantList.appendChild(li);
+                });
+            }
+
+            // Controlar estilos del input y la lista
+            if (filtered.length > 0) {
+                variantFilterInput.classList.add("variant-input-with-list");
+                variantList.classList.remove("hidden");
+            } else {
+                variantFilterInput.classList.remove("variant-input-with-list");
+                variantList.classList.add("hidden");
+            }
+        }
+
+        // Event Listeners
+        variantFilterInput.addEventListener("input", e => {
+            showFilteredVariants(e.target.value);
         });
 
-        variantList.classList.remove("hidden");
-    }
+        variantFilterInput.addEventListener("focus", () => {
+            showFilteredVariants(variantFilterInput.value);
+        });
 
-    variantFilterInput.addEventListener("input", e => {
-        showFilteredVariants(e.target.value);
-    });
+        document.addEventListener("click", e => {
+            if (!variantFilterInput.contains(e.target) && !variantList.contains(e.target)) {
+                variantList.classList.add("hidden");
+                variantFilterInput.classList.remove("variant-input-with-list");
+            }
+        });
 
-    variantFilterInput.addEventListener("focus", () => {
-        showFilteredVariants(variantFilterInput.value);
-    });
+        variantList.addEventListener("click", e => {
+            if (e.target.tagName === "LI" && e.target.dataset.id) {
+                selectedVariantId = e.target.dataset.id;
+                variantFilterInput.value = e.target.textContent;
+                variantList.classList.add("hidden");
+                variantFilterInput.classList.remove("variant-input-with-list");
+                updateMap();
+            }
+        });
 
-    variantList.addEventListener("click", e => {
-        if (e.target.tagName === "LI" && e.target.dataset.id) {
-            selectedVariantId = e.target.dataset.id;
-            variantFilterInput.value = e.target.textContent;
-            variantList.classList.add("hidden");
+        warehouseFilter.addEventListener("change", e => {
+            selectedWarehouseId = e.target.value;
             updateMap();
-        }
-    });
+        });
 
-    warehouseFilter.addEventListener("change", e => {
-        selectedWarehouseId = e.target.value;
+        clearButton.addEventListener("click", () => {
+            selectedVariantId = null;
+            selectedWarehouseId = "";
+            variantFilterInput.value = "";
+            warehouseFilter.value = "";
+            variantList.classList.add("hidden");
+            variantFilterInput.classList.remove("variant-input-with-list");
+            updateMap();
+        });
+
+        // Inicializar el mapa
         updateMap();
     });
-
-    clearButton.addEventListener("click", () => {
-        selectedVariantId = null;
-        selectedWarehouseId = "";
-        variantFilterInput.value = "";
-        warehouseFilter.value = "";
-        variantList.classList.add("hidden");
-        updateMap();
-    });
-
-    updateMap();
-});
-</script>
+    </script>
+</body>
+</html>
 {% endblock %}

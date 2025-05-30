@@ -66,7 +66,6 @@ def movement_create_post_view(request):
         ).first()
 
         if not inv or inv.quantity < movement.quantity:
-            messages.error(request, "Stock insuficiente en la bodega de origen.")
             return render(request, MOVEMENT_FORM_TEMPLATE, {'form': form})
 
         movement.status = 'Pending'
@@ -86,15 +85,12 @@ def movement_create_post_view(request):
             "emails/movimiento_pendiente_admin.html",
             {
                 "movement": movement,
-                "confirm_url": request.build_absolute_uri(reverse("movement-confirm", args=[movement.pk])),
-                "cancel_url": request.build_absolute_uri(reverse("movement-cancel", args=[movement.pk]))
+                "confirm_url": request.build_absolute_uri(reverse("movement-confirm-submit", args=[movement.pk])),
+                "cancel_url": request.build_absolute_uri(reverse("movement-cancel-submit", args=[movement.pk]))
             }
         )
-
-        messages.success(request, "Movimiento creado correctamente y notificaciones enviadas.")
         return redirect('movement-list')
     else:
-        messages.error(request, "Hubo un error al crear el movimiento.")
         return render(request, MOVEMENT_FORM_TEMPLATE, {'form': form})
 
 # ------------------- Confirmar movimiento -------------------
@@ -104,7 +100,6 @@ def confirm_movement(request, pk):
     movement = get_object_or_404(Movements.objects.select_for_update(), pk=pk)
 
     if movement.status != 'Pending':
-        messages.error(request, "Este movimiento ya está confirmado o cancelado.")
         return redirect('movement-list')
 
     inv_source = Inventory.objects.select_for_update().filter(
@@ -113,7 +108,6 @@ def confirm_movement(request, pk):
     ).first()
 
     if not inv_source or inv_source.quantity < movement.quantity:
-        messages.error(request, "Stock insuficiente o no registrado en la bodega de origen.")
         return redirect('movement-list')
 
     # Actualizar stock
@@ -146,8 +140,6 @@ def confirm_movement(request, pk):
             "emails/notificacion_bodega.html",
             {"movement": movement}
         )
-
-    messages.success(request, "Movimiento confirmado correctamente.")
     return redirect('movement-list')
 
 # ------------------- Cancelar movimiento -------------------
@@ -157,7 +149,6 @@ def cancel_movement(request, pk):
     movement = get_object_or_404(Movements.objects.select_for_update(), pk=pk)
 
     if movement.status != 'Pending':
-        messages.error(request, "Este movimiento ya está confirmado o cancelado.")
         return redirect('movement-list')
 
     movement.status = 'Canceled'
@@ -170,5 +161,4 @@ def cancel_movement(request, pk):
         {"movement": movement}
     )
 
-    messages.success(request, "Movimiento cancelado correctamente.")
     return redirect('movement-list')
